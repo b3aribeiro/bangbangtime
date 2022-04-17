@@ -54,7 +54,7 @@ function preload() {
   // for (let i = 1; i < 6; i++){
   //   img[i] = loadImage('img/inst_' + i + '.jpg');
   // }
-  font = loadFont('sancreek.ttf');
+  font = loadFont('assets/sancreek.ttf');
   
   ASSETS_manager.set("star", loadImage('assets/star.png'));
   ASSETS_manager.set("mask", loadImage('assets/mask.png'));
