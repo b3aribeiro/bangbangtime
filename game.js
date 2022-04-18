@@ -4,94 +4,85 @@ function drawGame(){
   if(shared.isRunning) {
     // console.log("shared running?")
     // console.log(shared.isRunning)
-    updateGameState();
+    updateGameObjects();
+    updateGameVisual();
   }
   
   if (!shared.isRunning) {
-      if(timer.roundCount === 0) {
+    if(timer.roundCount === 0) {
+      if(partyIsHost()){
+        push()
+        textSize(30);
+        text('Take control of your city, Sherif!', 300, 300);
+        text('Press ENTER to defend it.', 300, 330);
+        pop()
 
-        if(partyIsHost()){
-          push()
-          textSize(30);
-          text('Take control of your city, Sherif!', 300, 300);
-          text('Press ENTER to defend it.', 300, 330);
-          pop()
-  
-        }else{
-          push()
-          textSize(20);
-          text('The Sherif looking for a bandit like you...', 300, 300);
-          text('Get ready to show who should control this town', 300, 320);
-          pop()
-        }
-
-      } else { // game end, display winner
-
-        let result = my.isWin ? 'win!' : 'lose!';
-
+      }else{
+        push()
+        textSize(20);
+        text('The Sherif looking for a bandit like you...', 300, 300);
+        text('Get ready to show who should control this town', 300, 320);
+        pop()
+      }
+    } else { // game end, display winner
+      let result = my.isWin ? 'win!' : 'lose!';
+      push()
+      fill(0)
+      textSize(16);
+      textAlign(CENTER);
+      text(`You ${result}`, 300, 300);
+      pop()
+      if(partyIsHost()){
         push()
         fill(0)
         textSize(16);
         textAlign(CENTER);
-        text(`You ${result}`, 300, 300);
+        text(`you are the host, press ENTER to start the game`, 300, 350);
         pop()
-
-        if(partyIsHost()){
-
-          push()
-          fill(0)
-          textSize(16);
-          textAlign(CENTER);
-          text(`you are the host, press ENTER to start the game`, 300, 350);
-          pop()
-          // console.log("LMK When it kits !shared with party host - game end")
-
-        }else{
-          push()
-          fill(0)
-          textSize(16);
-          textAlign(CENTER);
-          text(`wait for the host to start the game`, 300, 350);
-          pop()
-          // console.log("LMK When it kits !shared with party host - game end")
-
-        }
-
+        // console.log("LMK When it kits !shared with party host - game end")
+      }else{
+        push()
+        fill(0)
+        textSize(16);
+        textAlign(CENTER);
+        text(`wait for the host to start the game`, 300, 350);
+        pop()
+        // console.log("LMK When it kits !shared with party host - game end")
       }
+    }
+  } else {
+    
+  // console.log("else what?")
+  // console.log(shared.isRunning)
+    //display timer and rounds 
+    push()
+    fill(0)
+    rect(0,580,width*2, 50)
+    fill(255)
+    textSize(20);
+    textAlign(CENTER);
+    text( `Current Round ${timer.roundCount}/10`, 100, 570);
+    
+    text( `${my.score}`, 500, 570);
+    text( `${timer.count}`, 300, 570);
+    textFont('Helvetica');
+    text( "🕰️", 320, 575);
+    text( `✶`, 520, 573);
+    pop()
+    
+    if(partyIsHost()){ // update countdown
 
-    }else{
-      
-    // console.log("else what?")
-    // console.log(shared.isRunning)
-      //display timer and rounds 
-      push()
-      fill(0)
-      rect(0,580,width*2, 50)
-      fill(255)
-      textSize(20);
-      textAlign(CENTER);
-      text( `Current Round ${timer.roundCount}/10`, 100, 570);
-      
-      text( `${my.score}`, 500, 570);
-      text( `${timer.count}`, 300, 570);
-      textFont('Helvetica');
-      text( "🕰️", 320, 575);
-      text( `✶`, 520, 573);
-      pop()
+      if(timer.roundFrame % FRAME_RATE === 0) timer.count -= 1; // countdown
+      timer.roundFrame ++; // add frame count
 
-      if(partyIsHost() && timer.count <= -1){
-
-        if (timer.roundCount < ROUND_TOTAL){
-      
+      if(timer.count <= -1) {
+        if (timer.roundCount < ROUND_TOTAL)
           startRound();
-
-        }else{
-      
+        else
           endGame();
-        }
-
       }
-    } // end timer
+    }
+  } // end timer
 }
 
 // Game State Management
@@ -130,9 +121,9 @@ function startRound() {
     }
   }
 
-  //init a new round
+  // initialize a new round
   timer.count = ROUND_DURATION;
-  timer.roundCount += 1;
+  timer.roundCount += 1; // round +1
   timer.roundFrame = 0; // reset the round frame
   
   // reset all the players
@@ -148,7 +139,7 @@ function startRound() {
   partySetShared(bullets, {bullets: []});
 }
 
-function updateGameState(){
+function updateGameObjects(){
   // host update
   if(partyIsHost()) {
     // check if the player has any pending bullet
@@ -167,13 +158,22 @@ function updateGameState(){
     if(bullets.bullets.length > 0) {
       bullets.bullets.forEach(function(bu, i){
         if(ifInCanvas(bu)) { // check if the bullet is still in the canvas
+          updateBullet(bu); // move the bullet
           // check if the bullet hits any player or clone
           for(let p of participants)
-            if(p.enabled && p.alive && collideCheck(p.origin, bu) && p.id !== bu.id) {
+            if(p.enabled && p.alive && p.id !== bu.id && collideCheck(p.origin, bu)) {
               partyEmit("stun", p.id); // tell the player to get stunned
               bullets.bullets.splice(i, 1); // remove the bullet if it hits a player
               break;
-            } else updateBullet(bu); // if not hit, move the bullet
+            } else { // check all the clones of the player
+              for(let copy of p.clones) {
+                if(copy.alive && copy.cloneId !== bu.id && collideCheck(copy, bu)) {
+                  partyEmit("stun", copy.cloneId); // tell the player to kill the clone
+                  bullets.bullets.splice(i, 1); // remove the bullet if it hits a player
+                  break;
+                }
+              }
+            }
         } else {
           bullets.bullets.splice(i, 1); // remove the bullet if it leaves the canvas
         }
@@ -181,14 +181,11 @@ function updateGameState(){
     }
     // update star
     if(!shared.star.isPicked) updateObj(shared.star);
-
-    if(timer.roundFrame % FRAME_RATE === 0) timer.count -= 1; // countdown
-    timer.roundFrame ++; // add frame count
   }
 
-  updateLocalClient(); // local update
-
-  // visualization
+  if(my.enabled) updateLocalClient(); // local update
+}
+function updateGameVisual() {
   // draw all the ENABLED players
   for(let p of participants) {
     if(p.enabled) {
@@ -208,7 +205,6 @@ function updateGameState(){
   // draw the star
   if(!shared.star.isPicked) drawStar(shared.star);
 }
-
 
 // Player Controls
 
@@ -274,12 +270,14 @@ function updateLocalClient() {
     // update all the local clones
     if(my.clones.length > 0) {
       for(let i in my.clones) {
-        let frame = my.clones[i].frame;
-        if(frame < local_commands[i].length && my.clones[i].stunned === 0) { // control the clone through history commands
-          updateEntity(my.clones[i], local_commands[i][frame]);
-          my.clones[i].frame += 1;
-        } else { // if the commands have run out, the clone will stay still
-          // updateEntity(my.clones[i], [false, false, false, false]);
+        if(my.clones[i].alive) { // check if the clone is still alive
+          let frame = my.clones[i].frame;
+          if(frame < local_commands[i].length && my.clones[i].stunned === 0) { // control the clone through history commands
+            updateEntity(my.clones[i], local_commands[i][frame]);
+            my.clones[i].frame += 1;
+          } else { // if the commands have run out, the clone will stay still
+            // updateEntity(my.clones[i], [false, false, false, false]);
+          }
         }
       }
     }
@@ -353,11 +351,12 @@ function checkAwaitingInstruction() {
     if(cmd === "clearBullets") { // clear new bullets
       my.newBullet = [];
     } else if(cmd.search("stun") !== -1) { // player gets stunned
+      console.log(cmd);
       let ID = parseInt(cmd.split('#')[1]);
       if(ID == 0) {
         my.origin.stunned = STUNNED_TIMER; // stun the player
       } else {
-        my.clones[ID].stunned = STUNNED_TIMER; // stun the corresponding clone
+        my.clones[ID - 1].alive = false; // kill the corresponding clone immediately
       }
     }
   }
@@ -367,7 +366,11 @@ function checkAwaitingInstruction() {
 // Visualization Functions
 function drawEntity(body, score, canvas = window) {
   canvas.push();
-  let alp = body.hasOwnProperty("cloneId") ? 120 : 255;
+  let alp = 255;
+  if(body.hasOwnProperty("cloneId")) {
+    alp = 120;
+    if(!body.alive) alp = 20;
+  }
   //if(participants.role == "player2")
   canvas.fill(body.color, 220, 180, alp);
   canvas.ellipse(body.pos_x, body.pos_y, body.size);   
@@ -428,12 +431,12 @@ function ifInCanvas(obj) { // check if an object is in the canvas
 
 function resetLocalPlayer() {
   // create a new clone (start from the 2nd round)
-  console.log(timer.roundCount);
   if(CLONE_MODE_ON && timer.roundCount > 1) {
     my.clones.push({
-      cloneId: my.id + '#' + timer.roundCount,
+      cloneId: my.id + '#' + (timer.roundCount - 1),
       startPos: my.startPos,
       frame: 0,
+      alive: true,
       pos_x: my.startPos.x, // x postion
       pos_y: my.startPos.y, // y postion
       vol: CHARACTER_VOL,
@@ -449,6 +452,7 @@ function resetLocalPlayer() {
   if(my.clones.length > 0) {
     for(let copy of my.clones) {
       copy.frame = 0;
+      copy.alive = true,
       copy.hasStar = false;
       copy.pos_x = copy.startPos.x;
       copy.pos_y = copy.startPos.y;
@@ -463,8 +467,6 @@ function resetLocalPlayer() {
   
   // create a new command collection
   local_commands.push([]);
-  console.log(my.clones);
-  console.log(local_commands);
 }
 function clearBullets(id) {
   if(my.id === id)
@@ -474,8 +476,8 @@ function stun(id) {
   // check the ID (local player or any local clone)
   if(typeof(id) == 'string') {
     let ids = id.split('#');
-    if(my.id === ids[0]) await_commands.push("stun#" + ids[1]);
+    if(my.id == ids[0]) await_commands.push("stun#" + ids[1]);
   } else {
-    if(my.id === id) await_commands.push("stun#0");
+    if(my.id == id) await_commands.push("stun#0");
   }
 }
