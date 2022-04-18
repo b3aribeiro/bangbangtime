@@ -20,7 +20,7 @@ var await_commands = []; // actions waiting to be executed
 
 //timer
 const ROUND_DURATION = 10; 
-const ROUND_TOTAL = 10;
+const ROUND_TOTAL = 5;
 
 const FRAME_RATE = 60;
 

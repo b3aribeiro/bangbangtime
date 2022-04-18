@@ -61,7 +61,7 @@ function drawGame(){
     fill(255)
     textSize(20);
     textAlign(CENTER);
-    text( `Current Round ${timer.roundCount}/10`, 100, 570);
+    text( `Current Round ${timer.roundCount}/${ROUND_TOTAL}`, 100, 570);
     
     text( `${my.score}`, 500, 570);
     text( `${timer.count}`, 300, 570);
