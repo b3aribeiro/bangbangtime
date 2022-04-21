@@ -1,34 +1,33 @@
-// let room = new URLSearchParams(location.search).get("room");
-let room = null;
-console.log("room:", room);
+let room = new URLSearchParams(location.search).get("room");
 
-let shared, bullets, timer; // shared objects
-let participants; // role: "player1" | "player2" | "observer"
+let shared; 
+let bullets; // bullet array for bullet objects data
+let timer; // roundCount, count and roundFrame 
+
+let participants; // role: "player1" | "player2" | "observer" + array of my
 let my;
 
-let sfx = [];
-
-var ASSETS_manager;
+var ASSETS_MANAGER;
 
 // global state
 //let gameState = "PLAYING"; // TITLE, PLAYING
 
 // general local parameters
-var NORMAL_VEC;
-var local_commands = []; // ESSENTIAL!!! --- local commands collection to control the clones
+var NORMAL_VEC; // this is how we control the direction of the bullet
+var local_commands = []; // ESSENTIAL!!! -- local commands collection to control the clones
 var await_commands = []; // actions waiting to be executed
-
-//timer
-const ROUND_DURATION = 10; 
-const ROUND_TOTAL = 5;
-
-const FRAME_RATE = 60;
+var bullet_cooldown_id = {};
 
 // in-game parameters
 const CLONE_MODE_ON = true;
-var bullet_cooldown_id = {};
 const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
 const RELOAD_TIMER = 60, STUNNED_TIMER = 40, WINNING_SCORE = 5;
+
+//timer related parameters
+const ROUND_DURATION = 10; 
+const ROUND_TOTAL = 5;
+const FRAME_RATE = 60;
+
 
 function preload() {
   partyConnect(
@@ -37,28 +36,20 @@ function preload() {
     "room"
   );
   
+  // TO DO: merge timer within shared and change shared name to manager
   shared = partyLoadShared("shared");
-  bullets = partyLoadShared("bullets");
   timer = partyLoadShared("timer");
+  bullets = partyLoadShared("bullets");
   
-  my = partyLoadMyShared();
   participants = partyLoadParticipantShareds();
+  my = partyLoadMyShared();
   
-  
-  // load assets
-  ASSETS_manager = new Map();
-  // for (let i = 0; i < 11; i++){
-  //   sfx[i] = loadSound('sfx/sfx_' + i + '.wav');
-  // } 
-  
-  // for (let i = 1; i < 6; i++){
-  //   img[i] = loadImage('img/inst_' + i + '.jpg');
-  // }
-  font = loadFont('assets/sancreek.ttf');
-  
-  ASSETS_manager.set("star", loadImage('assets/star.png'));
-  ASSETS_manager.set("mask", loadImage('assets/mask.png'));
-  ASSETS_manager.set("hat", loadImage('assets/hat.png'));
+  // Every asset should be load inside the ASSETS_manager
+  ASSETS_MANAGER = new Map();
+  ASSETS_MANAGER.set("font", loadFont('assets/sancreek.ttf'));
+  ASSETS_MANAGER.set("star", loadImage('assets/star.png'));
+  ASSETS_MANAGER.set("mask", loadImage('assets/mask.png'));
+  ASSETS_MANAGER.set("hat", loadImage('assets/hat.png'));
 }
 
 function setup() {
@@ -67,11 +58,10 @@ function setup() {
   angleMode(DEGREES);
   colorMode(HSB, 255);
   rectMode(CENTER);
-  
   textAlign(CENTER,CENTER);
-  textFont(font);
-  
+  textFont(ASSETS_MANAGER.get("font"));
   noStroke();
+
   NORMAL_VEC = createVector(1, 0);
   
   //partyToggleInfo(false);
@@ -79,12 +69,10 @@ function setup() {
   if (partyIsHost()) { 
     stepHost();       
   } else if (participants.length >= 3) {
-    //we still need to fix the observer view 
-    //me.role = "observer";
     partySetShared(my, {
     role: "observer",
     });
-  }
+  } //TO DO : review observer mode
 
   // subscribe party functions
   partySubscribe("resetLocalClients", resetLocalPlayer);
@@ -96,7 +84,7 @@ function draw() {
   
   background("rgb(202,44,44)");
   
-  if (room) { // room == null
+  if (room == null) { 
 
     noStroke();
     textSize(20);
@@ -108,9 +96,9 @@ function draw() {
   } else {
     
     background("rgb(218,218,36)");
+
     if (my.role !== "player1" && my.role !== "player2") {
         joinGame();
-      console.log(my.role)
         return;
     }
 
@@ -157,11 +145,11 @@ function stepHost(){
     isPicked: false
   }
 
-  bullets.bullets = [];
-
   timer.roundFrame = 0;
   timer.count = ROUND_DURATION;
   timer.roundCount = 0;
+
+  bullets.bullets = [];
 }
 
 function initializePlayer(){
@@ -169,8 +157,9 @@ function initializePlayer(){
   my.id = round(random(100)); // assign a unique ID to the player
   my.score = 0;
   my.isWin = false;
-
   my.alive = false; // if the player is alive
+
+  // initialize the character
   my.origin = {
     pos_x: width / 2, // x postion
     pos_y: height / 2, // y postion

@@ -2,8 +2,6 @@ function drawGame(){
   background(220);
 
   if(shared.isRunning) {
-    // console.log("shared running?")
-    // console.log(shared.isRunning)
     updateGameObjects();
     updateGameVisual();
   }
@@ -179,12 +177,13 @@ function updateGameObjects(){
         }
       });
     }
-    // update star
-    if(!shared.star.isPicked) updateObj(shared.star);
+
+    if(!shared.star.isPicked) updateStar(shared.star); // update star
   }
 
   if(my.enabled) updateLocalClient(); // local update
 }
+
 function updateGameVisual() {
   // draw all the ENABLED players
   for(let p of participants) {
@@ -242,7 +241,6 @@ function mousePressed() {
 }
 
 // Local Client Management
-
 function updateLocalClient() {
   // check if received any instruction from the host
   if(await_commands.length > 0) checkAwaitingInstruction();
@@ -327,14 +325,16 @@ function updateEntity(body, commands) {
     shared.star.isPicked = true; // set the star state to "picked"
   }
 }
+
 // update the position of a bullet
 function updateBullet(bullet) {
   let vol = bullet.vol, dir = bullet.dir;
   bullet.pos_x += vol * cos(dir);
   bullet.pos_y += vol * sin(dir);
 }
-// update an physic object
-function updateObj(obj) {
+
+// TO DO: Review and update the Star object once play who is holding the star is hit
+function updateStar(obj) {
   let vol = obj.vol, dir = obj.dir;
   if(vol > 0) {
     obj.pos_x += vol * cos(dir);
@@ -345,6 +345,7 @@ function updateObj(obj) {
       obj.vol = vol - vol / 4; // decelerate
   }
 }
+
 // check if there is any commands waiting for local client to execute
 function checkAwaitingInstruction() {
   for(let cmd of await_commands) {
@@ -371,30 +372,26 @@ function drawEntity(body, score, canvas = window) {
     alp = 120;
     if(!body.alive) alp = 20;
   }
-  //if(participants.role == "player2")
+  //if(my.role == "player2")
   canvas.fill(body.color, 220, 180, alp);
   canvas.ellipse(body.pos_x, body.pos_y, body.size);   
   
-  canvas.image(ASSETS_manager.get("hat"), body.pos_x - body.size/1.25,      
+  canvas.image(ASSETS_MANAGER.get("hat"), body.pos_x - body.size/1.25,      
   body.pos_y - body.size - 5 , body.size*1.6, body.size);
-  canvas.image(ASSETS_manager.get("mask"), body.pos_x - body.size/2,      
+  canvas.image(ASSETS_MANAGER.get("mask"), body.pos_x - body.size/2,      
   body.pos_y-5, body.size, body.size);
   
-    if(body.reload > 0) { // draw reloading bar
-      canvas.fill(120, 220, 120);
-      canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2, body.reload / RELOAD_TIMER * CHARACTER_SIZE, 10);
-    }
+  if(body.reload > 0) { // draw reloading bar
+    canvas.fill(120, 220, 120);
+    canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2, body.reload / RELOAD_TIMER * CHARACTER_SIZE, 10);
+  }
   
-    if(body.stunned > 0) { // draw stunned bar
-      canvas.fill(220, 120, 120);
-      canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2 - 12, body.stunned / STUNNED_TIMER * CHARACTER_SIZE, 10);
-    }
-  
-  // show the player's score
-  // canvas.fill(255);
-  // canvas.textSize(16);
-  // canvas.text(score, body.pos_x, body.pos_y)
-  // canvas.pop();
+  if(body.stunned > 0) { // draw stunned bar
+    canvas.fill(220, 120, 120);
+    canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2 - 12, body.stunned / STUNNED_TIMER * CHARACTER_SIZE, 10);
+  }
+
+  canvas.pop();
 }
 
 function drawBullet(bullet, canvas = window) {
@@ -406,13 +403,10 @@ function drawBullet(bullet, canvas = window) {
 
 function drawStar(star, canvas = window) {
   canvas.push();
-  // canvas.fill(255);
-  // canvas.rect(star.pos_x, star.pos_y, star.size + 5, star.size + 5);
-  canvas.image(ASSETS_manager.get("star"), star.pos_x  - star.size/1.5, star.pos_y - star.size/1.5, star.size + 10 ,star.size + 10);
+  canvas.image(ASSETS_MANAGER.get("star"), star.pos_x  - star.size/1.5, star.pos_y - star.size/1.5, star.size + 10 ,star.size + 10);
   canvas.pop();
 }
 
-// Auxilliar Functions
 function collideCheck(obj1, obj2) { // check if 2 objects collide
   let x1 = obj1.pos_x, y1 = obj1.pos_y, x2 = obj2.pos_x, y2 = obj2.pos_y;
   let s1 = obj1.size / 2, s2 = obj2.size / 2;
@@ -420,7 +414,7 @@ function collideCheck(obj1, obj2) { // check if 2 objects collide
   else return false;
 }
 
-function ifInCanvas(obj) { // check if an object is in the canvas
+function ifInCanvas(obj) { // check if an bullet is in the canvas
   let x = obj.pos_x, y = obj.pos_y, s = obj.size;
   if(x + s < 0 || x - s > width || y + s < 0 || y - s > height)
     return false;
@@ -428,7 +422,6 @@ function ifInCanvas(obj) { // check if an object is in the canvas
 }
 
 // Subscribed Functions
-
 function resetLocalPlayer() {
   // create a new clone (start from the 2nd round)
   if(CLONE_MODE_ON && timer.roundCount > 1) {
@@ -468,10 +461,12 @@ function resetLocalPlayer() {
   // create a new command collection
   local_commands.push([]);
 }
+
 function clearBullets(id) {
   if(my.id === id)
     await_commands.push("clearBullets");
 }
+
 function stun(id) {
   // check the ID (local player or any local clone)
   if(typeof(id) == 'string') {
