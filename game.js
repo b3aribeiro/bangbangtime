@@ -205,42 +205,8 @@ function updateGameVisual() {
   if(!shared.star.isPicked) drawStar(shared.star);
 }
 
-// Player Controls
-
-function keyPressed() {
-  // when host presses ENTER, start Game
-  if(partyIsHost() && keyIsDown(13) && !shared.isRunning) startGame(); 
-}
-
-function mousePressed() {
-  
-  // shoot a bullet
-  if(my.enabled && my.alive && my.origin.reload === 0 && my.origin.stunned === 0) {
-    // calculate the aimming direction
-    let vec = createVector(mouseX - my.origin.pos_x, mouseY - my.origin.pos_y);
-    let direct = NORMAL_VEC.angleBetween(vec);
-    
-    my.newBullet.push({ // create a new bullet
-      id: my.id,
-      pos_x: my.origin.pos_x, 
-      pos_y: my.origin.pos_y,
-      vol: BULLET_VOL,
-      dir: direct,
-      size: BULLET_SIZE,
-      color: my.origin.color
-    });
-    // start reloading
-    my.origin.reload = RELOAD_TIMER; // start reloading
-
-    // add shoot command in this frame
-    if(CLONE_MODE_ON) {
-      let last_command = local_commands[local_commands.length - 1].length - 1;
-      local_commands[local_commands.length - 1][last_command].push(true);
-    }
-  }
-}
-
 // Local Client Management
+
 function updateLocalClient() {
   // check if received any instruction from the host
   if(await_commands.length > 0) checkAwaitingInstruction();
@@ -282,11 +248,6 @@ function updateLocalClient() {
   }
 }
 
-function trackPlayer(commands) {
-  if(local_commands.length >= timer.roundCount)
-    local_commands[local_commands.length - 1].push(commands);
-}
-
 // update an entity's position
 function updateEntity(body, commands) {
   if(body.stunned <= 0) { // if the player is not stunned
@@ -323,26 +284,6 @@ function updateEntity(body, commands) {
   if(!shared.star.isPicked && collideCheck(body, shared.star)) {
     body.hasStar = true;
     shared.star.isPicked = true; // set the star state to "picked"
-  }
-}
-
-// update the position of a bullet
-function updateBullet(bullet) {
-  let vol = bullet.vol, dir = bullet.dir;
-  bullet.pos_x += vol * cos(dir);
-  bullet.pos_y += vol * sin(dir);
-}
-
-// TO DO: Review and update the Star object once play who is holding the star is hit
-function updateStar(obj) {
-  let vol = obj.vol, dir = obj.dir;
-  if(vol > 0) {
-    obj.pos_x += vol * cos(dir);
-    obj.pos_y += vol * sin(dir);
-    if(vol < 1) // check if the velocity is too low
-      obj.vol = 0; // stop the obj
-    else
-      obj.vol = vol - vol / 4; // decelerate
   }
 }
 
@@ -394,19 +335,6 @@ function drawEntity(body, score, canvas = window) {
   canvas.pop();
 }
 
-function drawBullet(bullet, canvas = window) {
-  canvas.push();
-  canvas.fill(bullet.color, 180, 160);
-  canvas.ellipse(bullet.pos_x, bullet.pos_y, bullet.size);
-  canvas.pop();
-}
-
-function drawStar(star, canvas = window) {
-  canvas.push();
-  canvas.image(ASSETS_MANAGER.get("star"), star.pos_x  - star.size/1.5, star.pos_y - star.size/1.5, star.size + 10 ,star.size + 10);
-  canvas.pop();
-}
-
 function collideCheck(obj1, obj2) { // check if 2 objects collide
   let x1 = obj1.pos_x, y1 = obj1.pos_y, x2 = obj2.pos_x, y2 = obj2.pos_y;
   let s1 = obj1.size / 2, s2 = obj2.size / 2;
@@ -414,65 +342,4 @@ function collideCheck(obj1, obj2) { // check if 2 objects collide
   else return false;
 }
 
-function ifInCanvas(obj) { // check if an bullet is in the canvas
-  let x = obj.pos_x, y = obj.pos_y, s = obj.size;
-  if(x + s < 0 || x - s > width || y + s < 0 || y - s > height)
-    return false;
-  else return true;
-}
 
-// Subscribed Functions
-function resetLocalPlayer() {
-  // create a new clone (start from the 2nd round)
-  if(CLONE_MODE_ON && timer.roundCount > 1) {
-    my.clones.push({
-      cloneId: my.id + '#' + (timer.roundCount - 1),
-      startPos: my.startPos,
-      frame: 0,
-      alive: true,
-      pos_x: my.startPos.x, // x postion
-      pos_y: my.startPos.y, // y postion
-      vol: CHARACTER_VOL,
-      dir: random(360), // face direction
-      size: CHARACTER_SIZE,
-      color: my.origin.color,
-      reload: 0, // reloading cooldown timer
-      stunned: 0, // stunned cooldown timer
-      hasStar: false // if the character has the star
-    });
-  }
-  // reset all the clones
-  if(my.clones.length > 0) {
-    for(let copy of my.clones) {
-      copy.frame = 0;
-      copy.alive = true,
-      copy.hasStar = false;
-      copy.pos_x = copy.startPos.x;
-      copy.pos_y = copy.startPos.y;
-    }
-  }
-
-  my.alive = true;
-  my.origin.hasStar = false;
-  my.origin.pos_x = random() < 0.5 ? 50 : width - 50;
-  my.origin.pos_y = random() < 0.5 ? 50 : height - 50;
-  my.startPos = {x: my.origin.pos_x, y: my.origin.pos_y};
-  
-  // create a new command collection
-  local_commands.push([]);
-}
-
-function clearBullets(id) {
-  if(my.id === id)
-    await_commands.push("clearBullets");
-}
-
-function stun(id) {
-  // check the ID (local player or any local clone)
-  if(typeof(id) == 'string') {
-    let ids = id.split('#');
-    if(my.id == ids[0]) await_commands.push("stun#" + ids[1]);
-  } else {
-    if(my.id == id) await_commands.push("stun#0");
-  }
-}
