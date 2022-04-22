@@ -4,6 +4,7 @@
 
 function startGame() {
   bullet_cooldown_id = {};
+  
   // initialzie all the players
   for(let p of participants) {
     // reset the player's score
@@ -19,20 +20,28 @@ function startGame() {
 }
 
 function endGame() {
+  // check who is the winner
+  whoIsWinner();
+
   for(let p of participants) {
     p.enabled = false; // disable the player
   }
+
   shared.isRunning = false; // stop the game
 }
 
 function startRound() {
-  // check if any player has win the game
+  // check who won this round
   for(let p of participants) {
-    if(p.origin.hasStar) {
-      if(p.score + 1 >= WINNING_SCORE) { // if the player's score reaches to the winning score, end the game immediately
-        p.isWin = true;
-        endGame();
-      } else p.score ++;
+    if(p.origin.hasStar)
+      p.score ++;
+    else { // also check if any of the player's clones has the star
+      for(let copy of p.clones) {
+        if(copy.hasStar) {
+          p.score ++;
+          break;
+        }
+      }
     }
   }
 
@@ -142,7 +151,6 @@ function checkAwaitingInstruction() {
     if(cmd === "clearBullets") { // clear new bullets
       my.newBullet = [];
     } else if(cmd.search("stun") !== -1) { // player gets stunned
-      console.log(cmd);
       let ID = parseInt(cmd.split('#')[1]);
       if(ID == 0) {
         my.origin.stunned = STUNNED_TIMER; // stun the player
@@ -155,15 +163,11 @@ function checkAwaitingInstruction() {
 }
 
 // Visualization Functions
-function drawEntity(body, score, canvas = window) {
+function drawEntity(body, canvas = window) {
   canvas.push();
-  let alp = 255;
-  if(body.hasOwnProperty("cloneId")) {
-    alp = 120;
-    if(!body.alive) alp = 20;
-  }
-  //if(my.role == "player2")
-  canvas.fill(body.color, 220, 180, alp);
+  // if(body.hasOwnProperty("cloneId") && !body.alive) // if the clone is dead, make it transparent
+  //   canvas.tint(255, 80);
+  canvas.fill(body.color, 220, 180);
   canvas.ellipse(body.pos_x, body.pos_y, body.size);   
   
   canvas.image(ASSETS_MANAGER.get("hat"), body.pos_x - body.size/1.25,      
@@ -182,4 +186,14 @@ function drawEntity(body, score, canvas = window) {
   }
 
   canvas.pop();
+}
+
+function whoIsWinner() { // make the player who has the highest score become winner
+  let highscore = 0;
+  for(let p of participants) {
+    if(p.score > highscore) highscore = p.score;
+  }
+  for(let p of participants) {
+    if(p.score === highscore) p.isWin = true;
+  }
 }

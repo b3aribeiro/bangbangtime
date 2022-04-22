@@ -54,10 +54,10 @@ function updateGameVisual() {
         // draw player clones
         if(p.clones.length > 0) {
           for(let copy of p.clones) {
-            drawEntity(copy);
+            if(copy.alive) drawEntity(copy);
           }
         }
-        drawEntity(p.origin, p.score);
+        drawEntity(p.origin);
       }
     }
     
