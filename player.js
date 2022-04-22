@@ -40,9 +40,9 @@ function resetLocalPlayer() {
     local_commands.push([]);
   }
   
-  function trackPlayer(commands) {
-    if(local_commands.length >= timer.roundCount)
-        local_commands[local_commands.length - 1].push(commands);
+function trackPlayer(commands) {
+  if(local_commands.length >= timer.roundCount)
+    local_commands[local_commands.length - 1].push(commands);
 }
 
 function stun(id) {
