@@ -5,15 +5,11 @@
 function startGame() {
   bullet_cooldown_id = {};
   
-  // initialzie all the players
-  for(let p of participants) {
-    // reset the player's score
-    p.score = 0;
-    p.isWin = false;
-    
-    p.enabled = true; // enable the player
+  // initialzie/reset all the players
+  partyEmit("restartLocalClients");
+  for(let p of participants)
     bullet_cooldown_id[p.id] = 0;
-  }
+  
   // start the timer
   shared.isRunning = true; // start the game
   startRound();
@@ -22,6 +18,9 @@ function startGame() {
 function endGame() {
   // check who is the winner
   whoIsWinner();
+
+  // reset round count
+  timer.roundCount = 0;
 
   for(let p of participants) {
     p.enabled = false; // disable the player
@@ -109,11 +108,15 @@ function updateLocalClient() {
 // update an entity's position
 function updateEntity(body, commands) {
   if(body.stunned <= 0) { // if the player is not stunned
-    // check the command (['LEFT', 'RIGHT', 'UP', 'DOWN', ${mouse_position}, (optional)${ifShoot}])
-    if(commands[0] && body.pos_x > body.size/2) body.pos_x -= body.vol;
-    if(commands[1] && body.pos_x < width - body.size/2) body.pos_x += body.vol;
-    if(commands[2] && body.pos_y > body.size/2) body.pos_y -= body.vol;
-    if(commands[3] && body.pos_y < height - body.size/2) body.pos_y += body.vol;
+    // check the command (['LEFT', 'RIGHT', 'UP', 'DOWN', ${mouse_position}, ${ifShoot}])
+    if(abs(body.vol_x) < CHARACTER_VOL) {
+      if(commands[0]) body.vol_x -= CHARACTER_ACL;
+      if(commands[1]) body.vol_x += CHARACTER_ACL;
+    }
+    if(abs(body.vol_y) < CHARACTER_VOL) {
+      if(commands[2]) body.vol_y -= CHARACTER_ACL;
+      if(commands[3]) body.vol_y += CHARACTER_ACL;
+    }
     // if shoot(only check clones)
     if(body.hasOwnProperty("cloneId") && commands[5]) { // check if the body is a clone
       let aimX = commands[4].x, aimY = commands[4].y;
@@ -132,8 +135,23 @@ function updateEntity(body, commands) {
     }
   }
   
-  // change the entity's face direction
+  // update the entity's face direction
   // body.dir = NORMAL_VEC.angleBetween(commands[4]);
+  // update the entity's position
+  body.pos_x += body.vol_x;
+  body.pos_y += body.vol_y;
+  if(body.pos_x < body.size/2) body.pos_x = body.size/2;
+  else if(body.pos_x > width - body.size/2) body.pos_x = width - body.size/2;
+  if(body.pos_y < body.size/2) body.pos_y = body.size/2;
+  else if(body.pos_y > height - body.size/2) body.pos_y = height - body.size/2;
+  // update the entity's velocity
+  if(abs(body.vol_x) < CHARACTER_ACL / 2) body.vol_x = 0;
+  else if(body.vol_x > 0) body.vol_x -= CHARACTER_ACL / 2;
+  else if(body.vol_x < 0) body.vol_x += CHARACTER_ACL / 2;
+  if(abs(body.vol_y) < CHARACTER_ACL / 2) body.vol_y = 0;
+  else if(body.vol_y > 0) body.vol_y -= CHARACTER_ACL / 2;
+  else if(body.vol_y < 0) body.vol_y += CHARACTER_ACL / 2;
+
   // update reload & stunned timer
   if(body.reload > 0) body.reload --;
   if(body.stunned > 0) body.stunned --;
@@ -151,9 +169,14 @@ function checkAwaitingInstruction() {
     if(cmd === "clearBullets") { // clear new bullets
       my.newBullet = [];
     } else if(cmd.search("stun") !== -1) { // player gets stunned
-      let ID = parseInt(cmd.split('#')[1]);
+      let cmds = cmd.split('#');
+      let ID = parseInt(cmds[1]);
       if(ID == 0) {
         my.origin.stunned = STUNNED_TIMER; // stun the player
+        // repulse the player
+        let newDir = parseInt(cmds[2]);
+        my.origin.vol_x = cos(newDir) * CHARACTER_VOL;
+        my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
       } else {
         my.clones[ID - 1].alive = false; // kill the corresponding clone immediately
       }

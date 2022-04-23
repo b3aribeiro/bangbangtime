@@ -23,13 +23,13 @@ function updateGameObjects(){
             // check if the bullet hits any player or clone
             for(let p of participants)
               if(p.enabled && p.alive && p.id !== bu.id && collideCheck(p.origin, bu)) {
-                partyEmit("stun", p.id); // tell the player to get stunned
+                partyEmit("stun", [p.id, bu.dir]); // tell the player to get stunned
                 bullets.bullets.splice(i, 1); // remove the bullet if it hits a player
                 break;
               } else { // check all the clones of the player
                 for(let copy of p.clones) {
                   if(copy.alive && copy.cloneId !== bu.id && collideCheck(copy, bu)) {
-                    partyEmit("stun", copy.cloneId); // tell the player to kill the clone
+                    partyEmit("stun", [copy.cloneId]); // tell the player to kill the clone
                     bullets.bullets.splice(i, 1); // remove the bullet if it hits a player
                     break;
                   }

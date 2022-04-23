@@ -20,7 +20,7 @@ var bullet_cooldown_id = {};
 
 // in-game parameters
 const CLONE_MODE_ON = true;
-const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
+const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_ACL = 0.5, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
 const RELOAD_TIMER = 60, STUNNED_TIMER = 40, WINNING_SCORE = 5;
 
 //timer related parameters
@@ -76,6 +76,7 @@ function setup() {
 
   // subscribe party functions
   partySubscribe("resetLocalClients", resetLocalPlayer);
+  partySubscribe("restartLocalClients", restartLocalPlayer);
   partySubscribe("clearBullets", clearBullets);
   partySubscribe("stun", stun);
 }
@@ -139,7 +140,8 @@ function stepHost(){
   shared.star = { // initialize the star
     pos_x: width / 2,
     pos_y: height / 2,
-    vol: 0,
+    vol_x: 0,
+    vol_y: 0,
     dir: random(360),
     size: STAR_SIZE,
     isPicked: false
@@ -161,9 +163,10 @@ function initializePlayer(){
 
   // initialize the character
   my.origin = {
-    pos_x: -100, // x postion
-    pos_y: -100, // y postion
-    vol: CHARACTER_VOL,
+    pos_x: -200, // x postion
+    pos_y: -200, // y postion
+    vol_x: 0,
+    vol_y: 0,
     dir: random(360), // face direction
     size: CHARACTER_SIZE,
     color: round(random(255)),

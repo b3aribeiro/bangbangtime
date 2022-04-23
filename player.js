@@ -1,6 +1,18 @@
 
 // Subscribed Functions
-function resetLocalPlayer() {
+function restartLocalPlayer() { // reset player state in a new GAME
+  // reset the player's score
+  my.score = 0;
+  my.isWin = false;
+  // clear local commands
+  local_commands = [];
+  await_commands = [];
+  // clear all the clones
+  my.clones = [];
+
+  my.enabled = true; // enable the player
+}
+function resetLocalPlayer() { // reset player state in a new ROUND
     // create a new clone (start from the 2nd round)
     if(CLONE_MODE_ON && timer.roundCount > 1) {
       my.clones.push({
@@ -10,7 +22,8 @@ function resetLocalPlayer() {
         alive: true,
         pos_x: my.startPos.x, // x postion
         pos_y: my.startPos.y, // y postion
-        vol: CHARACTER_VOL,
+        vol_x: 0,
+        vol_y: 0,
         dir: random(360), // face direction
         size: CHARACTER_SIZE,
         color: my.origin.color,
@@ -45,13 +58,13 @@ function trackPlayer(commands) {
     local_commands[local_commands.length - 1].push(commands);
 }
 
-function stun(id) {
+function stun(param) { // param: [entity id, repulsing direction]
     // check the ID (local player or any local clone)
-    if(typeof(id) == 'string') {
-      let ids = id.split('#');
-      if(my.id == ids[0]) await_commands.push("stun#" + ids[1]);
+    if(typeof(param[0]) == 'string') {
+      let chars = param[0].split('#');
+      if(my.id == chars[0]) await_commands.push("stun#" + chars[1]);
     } else {
-      if(my.id == id) await_commands.push("stun#0");
+      if(my.id == param[0]) await_commands.push("stun#0#" + param[1]);
     }
 }
 
