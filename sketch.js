@@ -161,8 +161,8 @@ function initializePlayer(){
 
   // initialize the character
   my.origin = {
-    pos_x: width / 2, // x postion
-    pos_y: height / 2, // y postion
+    pos_x: -100, // x postion
+    pos_y: -100, // y postion
     vol: CHARACTER_VOL,
     dir: random(360), // face direction
     size: CHARACTER_SIZE,

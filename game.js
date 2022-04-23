@@ -165,9 +165,9 @@ function checkAwaitingInstruction() {
 // Visualization Functions
 function drawEntity(body, canvas = window) {
   canvas.push();
-  // if(body.hasOwnProperty("cloneId") && !body.alive) // if the clone is dead, make it transparent
-  //   canvas.tint(255, 80);
-  canvas.fill(body.color, 220, 180);
+  let alp = 255;
+  if(body.hasOwnProperty("cloneId")) alp = 120; // if it's a clone, make it a little transparent 
+  canvas.fill(body.color, 220, 180, alp);
   canvas.ellipse(body.pos_x, body.pos_y, body.size);   
   
   canvas.image(ASSETS_MANAGER.get("hat"), body.pos_x - body.size/1.25,      
