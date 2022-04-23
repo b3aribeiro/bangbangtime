@@ -12,15 +12,15 @@ function startGame() {
   
   // start the timer
   shared.isRunning = true; // start the game
+
+  resetGameTimer();
+
   startRound();
 }
 
 function endGame() {
   // check who is the winner
   whoIsWinner();
-
-  // reset round count
-  timer.roundCount = 0;
 
   for(let p of participants) {
     p.enabled = false; // disable the player
@@ -45,9 +45,7 @@ function startRound() {
   }
 
   // initialize a new round
-  timer.count = ROUND_DURATION;
-  timer.roundCount += 1; // round +1
-  timer.roundFrame = 0; // reset the round frame
+  resetRoundTimer();
   
   // reset all the players
   setTimeout(function() {

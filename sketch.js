@@ -21,7 +21,7 @@ var bullet_cooldown_id = {};
 // in-game parameters
 const CLONE_MODE_ON = true;
 const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_ACL = 0.5, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
-const RELOAD_TIMER = 60, STUNNED_TIMER = 40, WINNING_SCORE = 5;
+const RELOAD_TIMER = 60, STUNNED_TIMER = 40
 
 //timer related parameters
 const ROUND_DURATION = 10; 
@@ -147,9 +147,8 @@ function stepHost(){
     isPicked: false
   }
 
-  timer.roundFrame = 0;
-  timer.count = ROUND_DURATION;
-  timer.roundCount = 0;
+  resetGameTimer();
+
 
   bullets.bullets = [];
 }
