@@ -52,9 +52,7 @@ function startRound() {
     partyEmit("resetLocalClients");
   }, 100);
   // reset the position of the star
-  shared.star.pos_x = width / 2;
-  shared.star.pos_y = width / 2;
-  shared.star.isPicked = false;
+  resetStar("center");
 
   // clear all the bullets on the canvas
   partySetShared(bullets, {bullets: []});
@@ -175,8 +173,12 @@ function checkAwaitingInstruction() {
         let newDir = parseInt(cmds[2]);
         my.origin.vol_x = cos(newDir) * CHARACTER_VOL;
         my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
+        //reset position for badge
+        resetStar("random");
       } else {
         my.clones[ID - 1].alive = false; // kill the corresponding clone immediately
+        //reset position for badge
+        resetStar("random");
       }
     }
   }

@@ -16,3 +16,19 @@ function updateStar(obj) {
         obj.vol = vol - vol / 4; // decelerate
     }
 }
+
+function resetStar(type){
+  if(type == "random"){
+    shared.star.pos_x = floor(random(width));
+    shared.star.pos_y = floor(random(height));
+    shared.star.isPicked = false;
+    my.origin.hasStar = false;
+  } else if (type == "center"){
+    shared.star.pos_x = width / 2;
+    shared.star.pos_y = height / 2;
+    shared.star.isPicked = false;
+  }
+}
+
+
+
