@@ -173,12 +173,19 @@ function checkAwaitingInstruction() {
         let newDir = parseInt(cmds[2]);
         my.origin.vol_x = cos(newDir) * CHARACTER_VOL;
         my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
-        //reset position for badge
-        resetStar("random");
+        // if the player has the star, reset position for badge
+        if(my.origin.hasStar) {
+          my.origin.hasStar = false;
+          resetStar("random");
+        }
       } else {
-        my.clones[ID - 1].alive = false; // kill the corresponding clone immediately
-        //reset position for badge
-        resetStar("random");
+        let copy = my.clones[ID - 1];
+        copy.alive = false; // kill the corresponding clone immediately
+        // if the clone has the star, reset position for badge
+        if(copy.hasStar) {
+          copy.hasStar = false;
+          resetStar("random");
+        }
       }
     }
   }

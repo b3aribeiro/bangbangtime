@@ -33,7 +33,7 @@ function preload() {
   partyConnect(
     "wss://deepstream-server-1.herokuapp.com",
     "bang_bang",
-    "room"
+    room
   );
   
   // TO DO: merge timer within shared and change shared name to manager
