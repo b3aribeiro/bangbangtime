@@ -6,6 +6,11 @@ function resetRoundTimer(){
   timer.currentCountdown = ROUND_DURATION; //reset countdown to 10 seconds
   timer.roundFrame = 0; // reset the round frame
 
+  timer.syncReady = false;
+}
+
+function syncFinishedTimer(){
+  timer.syncReady = true;
 }
 
 function resetGameTimer(){
@@ -15,6 +20,8 @@ function resetGameTimer(){
 
   timer.currentCountdown = ROUND_DURATION; 
   timer.roundFrame = 0; 
+
+  timer.syncReady = false;
 
 }
 

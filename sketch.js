@@ -1,7 +1,7 @@
 let room = new URLSearchParams(location.search).get("room");
 
 let shared; 
-let bullets; // bullet array for bullet objects data
+// let bullets; // bullet array for bullet objects data 
 let timer; // roundCount, count and roundFrame 
 
 let participants; // role: "player1" | "player2" | "observer" + array of my
@@ -18,6 +18,10 @@ var local_commands = []; // ESSENTIAL!!! -- local commands collection to control
 var await_commands = []; // actions waiting to be executed
 var bullet_cooldown_id = {};
 
+let local_commands_all = new Map(); //commands collection for the clones of all players 
+let clones = []; 
+let bullets = []; // LOCAL bullet array for bullet objects data 
+
 // in-game parameters
 const CLONE_MODE_ON = true;
 const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_ACL = 0.5, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
@@ -25,7 +29,7 @@ const RELOAD_TIMER = 60, STUNNED_TIMER = 40
 
 //timer related parameters
 const ROUND_DURATION = 10; 
-const ROUND_TOTAL = 5;
+const ROUND_TOTAL = 10;
 const FRAME_RATE = 60;
 
 
@@ -39,7 +43,7 @@ function preload() {
   // TO DO: merge timer within shared and change shared name to manager
   shared = partyLoadShared("shared");
   timer = partyLoadShared("timer");
-  bullets = partyLoadShared("bullets");
+  // bullets = partyLoadShared("bullets");
   
   participants = partyLoadParticipantShareds();
   my = partyLoadMyShared();
@@ -77,8 +81,15 @@ function setup() {
   // subscribe party functions
   partySubscribe("resetLocalClients", resetLocalPlayer);
   partySubscribe("restartLocalClients", restartLocalPlayer);
+
   partySubscribe("clearBullets", clearBullets);
+  partySubscribe("downloadBullets", downloadBullets);
+  partySubscribe("clearThisBullet", clearThisBullet);
+
   partySubscribe("stun", stun);
+
+  partySubscribe("uploadCommands", uploadCommands);
+  partySubscribe("downloadCommands", downloadCommands);
 }
 
 function draw() {
@@ -150,7 +161,7 @@ function stepHost(){
   resetGameTimer();
 
 
-  bullets.bullets = [];
+  // bullets.bullets = [];
 }
 
 function initializePlayer(){
@@ -176,5 +187,5 @@ function initializePlayer(){
   
   my.newBullet = [], // bullets waiting to be update
   my.startPos = {x: 0, y: 0};
-  my.clones = [];
+
 }
