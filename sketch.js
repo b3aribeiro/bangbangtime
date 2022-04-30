@@ -79,8 +79,8 @@ function setup() {
   } //TO DO : review observer mode
 
   // subscribe party functions
-  partySubscribe("resetLocalClients", resetLocalPlayer);
-  partySubscribe("restartLocalClients", restartLocalPlayer);
+  partySubscribe("resetLocalPlayer", resetLocalPlayer);
+  partySubscribe("restartLocalPlayer", restartLocalPlayer);
 
   partySubscribe("clearBullets", clearBullets);
   partySubscribe("downloadBullets", downloadBullets);
@@ -185,7 +185,6 @@ function initializePlayer(){
     hasStar: false // if the character has the star
   };
   
-  my.newBullet = [], // bullets waiting to be update
   my.startPos = {x: 0, y: 0};
 
 }

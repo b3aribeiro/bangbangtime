@@ -22,9 +22,6 @@ function mousePressed() {
         color: my.origin.color
       }
 
-      my.newBullet.push(newBullet);
-
-
       partyEmit("downloadBullets", newBullet)
       
       // add shoot command in this frame

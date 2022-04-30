@@ -29,5 +29,10 @@ function resetStar(type){
   }
 }
 
+function starIsLost(body){
+  body.hasStar = false;
+  resetStar("random");
+  my.score --;
+}
 
 

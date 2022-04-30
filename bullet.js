@@ -5,7 +5,7 @@ function moveBullet(bullet) {
     bullet.pos_y += vol * sin(dir);
 }
   
-  function drawBullet(bullet, canvas = window) {
+function drawBullet(bullet, canvas = window) {
     canvas.push();
     canvas.fill(bullet.color, 180, 160);
     canvas.ellipse(bullet.pos_x, bullet.pos_y, bullet.size);
@@ -68,8 +68,6 @@ function updateBullets(){
 
             
               moveBullet(bu); // move the bullet
-
-              console.log('move', bu)
 
             } else {
               bullets.splice(i, 1); // remove the bullet if it leaves the canvas

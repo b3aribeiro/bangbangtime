@@ -12,7 +12,9 @@ function updateGameObjects(){
 // Local Client Management
 
 function updateLocalClient() {
-  // check if received any instruction from the host
+  // check if there's any instructions to execute, including
+  //1. get stunned
+  //2. erase bullets
   if(await_commands.length > 0) checkAwaitingInstruction();
   
   if(my.enabled) {
@@ -99,7 +101,6 @@ function updateEntity(body, commands, isMyClone = false) {
           size: BULLET_SIZE,
           color: body.color
         }
-        my.newBullet.push(newBullet);
         partyEmit("downloadBullets", newBullet)
       }
     }
@@ -127,8 +128,6 @@ function updateEntity(body, commands, isMyClone = false) {
   if(body.stunned > 0) body.stunned --;
 
   // check if the entity collides the star
-  // TO DO: let host check star?
-
   if(!shared.star.isPicked && ( !body.hasOwnProperty("cloneId") || isMyClone) ) {
 
     if (collideCheck(body, shared.star)) {
@@ -151,12 +150,12 @@ function trackPlayer(commands) {
 function checkAwaitingInstruction() {
   for(let cmd of await_commands) {
 
-    if(cmd === "clearBullets") { // clear new bullets
+    if(cmd === "clearBullets") { // 1.clear new bullets
       my.newBullet = [];
 
     } 
     
-    else if(cmd.includes("stunMy")) { // my gets stunned
+    else if(cmd.includes("stunMy")) { // 1.my gets stunned
 
         my.origin.stunned = STUNNED_TIMER; // stun the player
         // repulse the player
@@ -165,13 +164,12 @@ function checkAwaitingInstruction() {
         my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
         // if the player has the star, reset position for badge
         if(my.origin.hasStar) {
-          my.origin.hasStar = false;
-          resetStar("random");
-          my.score --;
+
+          starIsLost(my.origin)
         }
       }
       
-  else {//clones get stunned
+  else {//3.clones get stunned
 
       let thisCloneId = cmd.split("##")[1];
       let thisPlayerId = parseInt(thisCloneId.split("#")[0])
@@ -182,9 +180,8 @@ function checkAwaitingInstruction() {
 
       // if 1. this is my clone, 2.the clone has the star, reset position for badge
       if(copy.hasStar && thisPlayerId === my.id) {
-          copy.hasStar = false;
-          resetStar("random");
-          my.score --;
+
+          starIsLost(copy)
       }
   }
  

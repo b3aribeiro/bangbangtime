@@ -4,16 +4,20 @@ function drawGame(){
     background(220);
   
     if(shared.isRunning) {
-      updateGameObjects();
-      updateGameVisual();
 
-      //GAME STATE MGMT:
-      //update timer
-      if(partyIsHost()){ 
-        updateTimer();
+      if (timer.syncReady){ //check if the pause between rounds has finished
+        updateGameObjects();
+        updateGameVisual();
+  
+        //GAME STATE MGMT:
+        //update timer
+        if(partyIsHost()){ 
+          updateTimer();
+        }
+        //display timer and rounds 
+        drawTimer();
       }
-      //display timer and rounds 
-      drawTimer();
+
 
     }
     
@@ -39,10 +43,10 @@ function startGame() {
   bullet_cooldown_id = {};
   
   // initialzie/reset all the players
-  partyEmit("restartLocalClients");
+  partyEmit("restartLocalPlayer");
 
-  for(let p of participants)
-    bullet_cooldown_id[p.id] = 0;
+  // for(let p of participants)
+  //   bullet_cooldown_id[p.id] = 0;
   
   // start the timer
   shared.isRunning = true; // start the game
@@ -82,7 +86,7 @@ function startRound() {
   }, 200);
 
   setTimeout(function() {
-    partyEmit("resetLocalClients");
+    partyEmit("resetLocalPlayer");
     syncFinishedTimer();
   }, 300);
 
@@ -92,7 +96,7 @@ function startRound() {
   // clear all the bullets on the canvas
   // partySetShared(bullets, {bullets: []});
  
-  bullets = [];
+  bullets = new Array();
 }
 
 
