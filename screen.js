@@ -24,6 +24,8 @@ function drawEndScreen(){
     textSize(30);
     textAlign(CENTER);
     text(`You ${result}`, 300, 200);
+    textSize(20);
+    text(`score: ${my.score}`, 300, 250);
     pop()
 
     //instructions to restart the game

@@ -58,8 +58,8 @@ function restartLocalPlayer() { // reset player state in a new GAME
               local_commands_all.set(p.commands.cloneid, p.commands.commands)
 
               let newClone = {
-                cloneId: p.commands.cloneid,
-                startPos: JSON.parse(JSON.stringify(p.startPos)),
+                cloneId: p.id + '#' + (timer.roundCount - 1), //TO DO: why use p.commands.cloneid might cause undefined error
+                startPos: p.startPos,
                 frame: 0,
                 alive: true,
                 pos_x: p.origin.pos_x, // x postion
@@ -74,8 +74,9 @@ function restartLocalPlayer() { // reset player state in a new GAME
                 hasStar: false // if the character has the star
               }
 
-              clones.push( JSON.parse(JSON.stringify(newClone)) );
-     
+
+              clones.push( JSON.parse(JSON.stringify(newClone)) ); //deep clone
+
           }
           
         })
@@ -94,6 +95,8 @@ function restartLocalPlayer() { // reset player state in a new GAME
             copy.stunned= 0; // stunned cooldown timer
           }
         }
+
+        console.log(clones, "clones")
       }
 
 

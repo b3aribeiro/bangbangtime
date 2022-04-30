@@ -77,9 +77,8 @@ function startRound() {
   resetRoundTimer();
   
   // reset all the players
-  setTimeout(function() {
-    partyEmit("uploadCommands");
-  }, 100);
+  partyEmit("uploadCommands");
+
 
   setTimeout(function() {
     partyEmit("downloadCommands");
@@ -87,8 +86,11 @@ function startRound() {
 
   setTimeout(function() {
     partyEmit("resetLocalPlayer");
+  }, 400);
+
+  setTimeout(function() {
     syncFinishedTimer();
-  }, 300);
+  }, 500);
 
   // reset the position of the star
   resetStar("center");
@@ -106,6 +108,9 @@ function whoIsWinner() { // make the player who has the highest score become win
     if(p.score > highscore) highscore = p.score;
   }
   for(let p of participants) {
-    if(p.score === highscore) p.isWin = true;
+    console.log("participants", p.score, "highscroe", highscore)
+    if(p.score == highscore) p.isWin = true;
   }
+
+  console.log(highscore)
 }
