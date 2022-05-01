@@ -72,7 +72,7 @@ function stun(param) { // param: [entity id, repulsing direction]
 function keyPressed() {
     // when host presses ENTER, start Game
     if(partyIsHost() && keyIsDown(13) && !shared.isRunning) startGame(); 
-    if(partyIsHost() && keyIsDown(13) && shared.isRunning && timer.roundState == "inbetween") startRound(); 
+
 }
   
 function mousePressed() {

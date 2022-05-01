@@ -32,6 +32,7 @@ function endGame() {
 
 function startRound(){
 
+
   resetRoundTimer();
 
   // reset the position of the star
@@ -50,6 +51,20 @@ function startRound(){
     timer.resetLocalPlayerFinished = true;
   }, 300);
     
+}
+
+
+function endRound(){
+
+
+  timer.roundState = 'inbetween';
+  timer.resetLocalPlayerFinished = false;
+
+  timer.inbetweenCountdown = INBETWEEN_DURATION;
+  timer.inbetweenFrame = 0;
+
+  my.receiveScore = ifHasStar() ? true : false; //check if has score this round
+
 }
 
 // Local Client Management
@@ -215,6 +230,9 @@ function whoIsWinner() { // make the player who has the highest score become win
     if(p.score > highscore) highscore = p.score;
   }
   for(let p of participants) {
+    console.log("participants", p.score, "highscroe", highscore)
     if(p.score === highscore) p.isWin = true;
   }
+
+  console.log(highscore)
 }

@@ -24,6 +24,8 @@ function drawGame(){
 
         //display in between screens;
         drawInBetweenScreen();
+
+        updateInbetweenTimer();
       }
 
 

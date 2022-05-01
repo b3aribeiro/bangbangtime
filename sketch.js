@@ -27,6 +27,7 @@ const RELOAD_TIMER = 60, STUNNED_TIMER = 40
 const ROUND_DURATION = 10; 
 const ROUND_TOTAL = 5;
 const FRAME_RATE = 60;
+const INBETWEEN_DURATION = 3;
 
 
 function preload() {
