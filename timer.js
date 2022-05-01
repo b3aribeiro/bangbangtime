@@ -71,6 +71,7 @@ function updateInbetweenTimer(){
 function drawTimer(){
       //display timer and rounds 
       push()
+      translate(0, SITE.bottom - 580)
       fill(0)
       rect(0,580,width*2, 50)
       fill(255)

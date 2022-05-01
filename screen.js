@@ -2,15 +2,15 @@ function drawStartScreen(){
     if(partyIsHost()){
         push()
         textSize(30);
-        text('Take control of your city, Sherif!', 300, 300);
-        text('Press ENTER to defend it.', 300, 330);
+        text('Take control of your city, Sherif!', width / 2, height / 2);
+        text('Press ENTER to defend it.', width / 2, height / 2 + 30);
         pop()
 
       }else{
         push()
         textSize(20);
-        text('The Sherif looking for a bandit like you...', 300, 300);
-        text('Get ready to show who should control this town', 300, 320);
+        text('The Sherif looking for a bandit like you...', width / 2, height / 2);
+        text('Get ready to show who should control this town', width / 2, height / 2 + 30);
         pop()
       }
 }
@@ -23,10 +23,10 @@ function drawEndScreen(){
     fill(0)
     textSize(30);
     textAlign(CENTER);
-    text(`You ${result}`, 300, 200);
+    text(`You ${result}`, width / 2, height / 2 - 100);
 
     textSize(20);
-    text(`score: ${my.score}`, 300, 250);
+    text(`score: ${my.score}`, width / 2, height / 2 - 50);
     pop()
 
     //instructions to restart the game
@@ -35,8 +35,8 @@ function drawEndScreen(){
         fill(0)
         textSize(20);
         textAlign(CENTER);
-        text('Take control of your city, Sherif!', 300, 300);
-        text('Press ENTER to defend it.', 300, 330);
+        text('Take control of your city, Sherif!', width / 2, height / 2);
+        text('Press ENTER to defend it.', width / 2, height / 2 + 30);
         pop()
         // console.log("LMK When it kits !shared with party host - game end")
       }else{
@@ -44,8 +44,8 @@ function drawEndScreen(){
         fill(0)
         textSize(20);
         textAlign(CENTER);
-        text('The Sherif looking for a bandit like you...', 300, 300);
-        text('Get ready to show who should control this town', 300, 320);
+        text('The Sherif looking for a bandit like you...', width / 2, height / 2);
+        text('Get ready to show who should control this town', width / 2, height / 2 + 20);
         pop()
         // console.log("LMK When it kits !shared with party host - game end")
       }
@@ -58,12 +58,12 @@ function drawInBetweenScreen(){
   fill(0)
   textSize(30);
   textAlign(CENTER);
-  text(`${result}`, 300, 200);
+  text(`${result}`, width / 2, height / 2 - 100);
 
   textSize(20);
-  text(`current score: ${my.score}`, 300, 250);
+  text(`current score: ${my.score}`, width / 2, height / 2 - 50);
 
-  text(`${timer.inbetweenCountdown}`, 300, 300);
+  text(`${timer.inbetweenCountdown}`, width / 2, height / 2);
   pop()
 
   //instructions to restart the game

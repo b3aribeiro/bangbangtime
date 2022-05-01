@@ -5,8 +5,13 @@
 function startGame() {
   bullet_cooldown_id = {};
   
+  // re-initialize spawn points
+  shared.spawnPts = initSpawnPoints();
   // initialzie/reset all the players
-  partyEmit("restartLocalClients");
+  setTimeout(function() {
+    partyEmit("restartLocalClients");
+  }, 100);
+  
   for(let p of participants)
     bullet_cooldown_id[p.id] = 0;
   
@@ -16,6 +21,16 @@ function startGame() {
   resetGameTimer();
 
   startRound();
+}
+function initSpawnPoints() {
+  let num = participants.length * ROUND_TOTAL;
+  let points = [], deg = 0, center = [(SITE.right + SITE.left) / 2, (SITE.bottom + SITE.top) / 2];
+  let distX = (SITE.right - SITE.left) / 2 * 0.8, distY = (SITE.bottom - SITE.top) / 2 * 0.8;
+  for(let i = 0; i < num; i++) {
+    points.push([center[0] + distX * cos(deg), center[1] + distY * sin(deg)]);
+    deg += 360 / num;
+  }
+  return shuffle(points);
 }
 
 function endGame() {
@@ -113,14 +128,27 @@ function updateLocalClient() {
 // update an entity's position
 function updateEntity(body, commands) {
   if(body.stunned <= 0) { // if the player is not stunned
+    // check if the player is moving (if the velocity equals 0)
+    if(body.vol_x !== 0 || body.vol_y !== 0) body.ifMove = true;
+    else body.ifMove = false;
     // check the command (['LEFT', 'RIGHT', 'UP', 'DOWN', ${mouse_position}, ${ifShoot}])
     if(abs(body.vol_x) < CHARACTER_VOL) {
-      if(commands[0]) body.vol_x -= CHARACTER_ACL;
-      if(commands[1]) body.vol_x += CHARACTER_ACL;
+      if(commands[0]) {
+        body.vol_x -= CHARACTER_ACL;
+        if(body.dir === "right") body.dir = "left";
+      }
+      if(commands[1]) {
+        body.vol_x += CHARACTER_ACL;
+        if(body.dir === "left") body.dir = "right";
+      }
     }
     if(abs(body.vol_y) < CHARACTER_VOL) {
-      if(commands[2]) body.vol_y -= CHARACTER_ACL;
-      if(commands[3]) body.vol_y += CHARACTER_ACL;
+      if(commands[2]) {
+        body.vol_y -= CHARACTER_ACL;
+      }
+      if(commands[3]) {
+        body.vol_y += CHARACTER_ACL;
+      }
     }
     // if shoot(only check clones)
     if(body.hasOwnProperty("cloneId") && commands[5]) { // check if the body is a clone
@@ -138,17 +166,17 @@ function updateEntity(body, commands) {
         color: body.color
       });
     }
-  }
+  } else body.ifMove = false;
   
   // update the entity's face direction
   // body.dir = NORMAL_VEC.angleBetween(commands[4]);
   // update the entity's position
   body.pos_x += body.vol_x;
   body.pos_y += body.vol_y;
-  if(body.pos_x < body.size/2) body.pos_x = body.size/2;
-  else if(body.pos_x > width - body.size/2) body.pos_x = width - body.size/2;
-  if(body.pos_y < body.size/2) body.pos_y = body.size/2;
-  else if(body.pos_y > height - body.size/2) body.pos_y = height - body.size/2;
+  if(body.pos_x < SITE.left + body.size/2) body.pos_x = SITE.left + body.size/2;
+  else if(body.pos_x > SITE.right - body.size/2) body.pos_x = SITE.right - body.size/2;
+  if(body.pos_y < SITE.top + body.size/2) body.pos_y = SITE.top + body.size/2;
+  else if(body.pos_y > SITE.bottom - body.size/2) body.pos_y = SITE.bottom - body.size/2;
   // update the entity's velocity
   if(abs(body.vol_x) < CHARACTER_ACL / 2) body.vol_x = 0;
   else if(body.vol_x > 0) body.vol_x -= CHARACTER_ACL / 2;
@@ -200,27 +228,38 @@ function checkAwaitingInstruction() {
 
 // Visualization Functions
 function drawEntity(body, canvas = window) {
-  canvas.push();
-  let alp = 255;
-  if(body.hasOwnProperty("cloneId")) alp = 120; // if it's a clone, make it a little transparent 
-  canvas.fill(body.color, 220, 180, alp);
-  canvas.ellipse(body.pos_x, body.pos_y, body.size);   
-  
-  canvas.image(ASSETS_MANAGER.get("hat"), body.pos_x - body.size/1.25,      
-  body.pos_y - body.size - 5 , body.size*1.6, body.size);
-  canvas.image(ASSETS_MANAGER.get("mask"), body.pos_x - body.size/2,      
-  body.pos_y-5, body.size, body.size);
-  
+  canvas.push()
+  // draw the shadow
+  canvas.fill(20, 130);
+  canvas.ellipse(body.pos_x, body.pos_y + 27, 64, 20);
   if(body.reload > 0) { // draw reloading bar
     canvas.fill(120, 220, 120);
-    canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2, body.reload / RELOAD_TIMER * CHARACTER_SIZE, 10);
+    canvas.rect(body.pos_x, body.pos_y - 32, body.reload / RELOAD_TIMER * CHARACTER_SIZE, 8);
   }
-  
   if(body.stunned > 0) { // draw stunned bar
     canvas.fill(220, 120, 120);
-    canvas.rect(body.pos_x, body.pos_y - CHARACTER_SIZE / 2 - 12, body.stunned / STUNNED_TIMER * CHARACTER_SIZE, 10);
+    canvas.rect(body.pos_x, body.pos_y - 42, body.stunned / STUNNED_TIMER * CHARACTER_SIZE, 8);
   }
+  canvas.pop();
 
+  // draw the player avatar
+  canvas.push();
+  canvas.imageMode(CENTER);
+  if(body.ifMove && frameCount % 16 < 8) canvas.translate(0, -4);
+  switch(body.dir) {
+    case "right":
+      canvas.image(ASSETS_MANAGER.get("player_right"), body.pos_x, body.pos_y);
+      break;
+    case "left":
+      canvas.image(ASSETS_MANAGER.get("player_left"), body.pos_x, body.pos_y);
+      break;
+  }
+  // draw the cloth
+  if(body.hasOwnProperty("cloneId")) canvas.fill("rgba(" + body.color + ", 0.65)"); // if it's a clone, make it a little transparent 
+  else canvas.fill("rgb(" + body.color + ")");
+  canvas.rect(body.pos_x, body.pos_y + 11, 43, 16);
+  // draw the badge
+  if(body.hasStar) canvas.image(ASSETS_MANAGER.get("minibadge"), body.pos_x, body.pos_y + 8);
   canvas.pop();
 }
 

@@ -23,6 +23,10 @@ const CLONE_MODE_ON = true;
 const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_ACL = 0.5, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
 const RELOAD_TIMER = 60, STUNNED_TIMER = 40
 
+// canvas parameters
+const SCREEN_WIDTH = 900, SCREEN_HEIGHT = 700;
+const SITE = {left: 0, right: SCREEN_WIDTH, top: 120, bottom: SCREEN_HEIGHT};
+
 //timer related parameters
 const ROUND_DURATION = 10; 
 const ROUND_TOTAL = 5;
@@ -45,16 +49,25 @@ function preload() {
   participants = partyLoadParticipantShareds();
   my = partyLoadMyShared();
   
-  // Every asset should be load inside the ASSETS_manager
+  // Every asset should be loaded inside the ASSETS_manager
   ASSETS_MANAGER = new Map();
   ASSETS_MANAGER.set("font", loadFont('assets/sancreek.ttf'));
-  ASSETS_MANAGER.set("star", loadImage('assets/star.png'));
-  ASSETS_MANAGER.set("mask", loadImage('assets/mask.png'));
-  ASSETS_MANAGER.set("hat", loadImage('assets/hat.png'));
+  
+  ASSETS_MANAGER.set("player_left", loadImage('assets/player_left.png'));
+  ASSETS_MANAGER.set("player_right", loadImage('assets/player_right.png'));
+  ASSETS_MANAGER.set("minibadge", loadImage('assets/minibadge.png'));
+  ASSETS_MANAGER.set("badge", loadImage('assets/badge.png'));
+  ASSETS_MANAGER.set("background", loadImage('assets/background.png'));
+}
+
+function loadAnim(path, num) { // load a series of png as an array
+  let anim = [];
+  for(i = 1; i <= num; i++) anim.push(loadImage(path + i + '.png'));
+  return anim;
 }
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(SCREEN_WIDTH, SCREEN_HEIGHT);
   frameRate(FRAME_RATE);
   angleMode(DEGREES);
   colorMode(HSB, 255);
@@ -126,12 +139,12 @@ function joinGame() {
 
   if (!participants.find((p) => p.role === "player1")) {
     my.role = "player1";
-    initializePlayer();
+    initializePlayer("179, 47, 47");
     return;
   }
   if (!participants.find((p) => p.role === "player2")) {
     my.role = "player2";
-    initializePlayer();
+    initializePlayer("47, 124, 179");
     return;
   }
 }
@@ -139,8 +152,8 @@ function joinGame() {
 function stepHost(){
   shared.isRunning = false;
   shared.star = { // initialize the star
-    pos_x: width / 2,
-    pos_y: height / 2,
+    pos_x: (SITE.right + SITE.left) / 2,
+    pos_y: (SITE.bottom + SITE.top) / 2,
     vol_x: 0,
     vol_y: 0,
     dir: random(360),
@@ -150,11 +163,10 @@ function stepHost(){
 
   resetGameTimer();
 
-
   bullets.bullets = [];
 }
 
-function initializePlayer(){
+function initializePlayer(col = '255, 255, 255'){
   my.enabled = false; // if the player is playing the game
   my.id = round(random(100)); // assign a unique ID to the player
   my.score = 0;
@@ -167,9 +179,10 @@ function initializePlayer(){
     pos_y: -200, // y postion
     vol_x: 0,
     vol_y: 0,
-    dir: random(360), // face direction
+    dir: "right", // face direction
+    ifMove: false,
     size: CHARACTER_SIZE,
-    color: round(random(255)),
+    color: col,
     reload: 0, // reloading cooldown timer
     stunned: 0, // stunned cooldown timer
     hasStar: false // if the character has the star

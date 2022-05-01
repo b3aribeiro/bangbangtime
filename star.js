@@ -1,6 +1,9 @@
 function drawStar(star, canvas = window) {
     canvas.push();
-    canvas.image(ASSETS_MANAGER.get("star"), star.pos_x  - star.size/1.5, star.pos_y - star.size/1.5, star.size + 10 ,star.size + 10);
+    canvas.imageMode(CENTER);
+    // canvas.fill(20, 130);
+    // canvas.ellipse(star.pos_x, star.pos_y + 2, star.size * 2.2);
+    canvas.image(ASSETS_MANAGER.get("badge"), star.pos_x, star.pos_y);
     canvas.pop();
 }
 
@@ -19,12 +22,12 @@ function updateStar(obj) {
 
 function resetStar(type){
   if(type == "random"){
-    shared.star.pos_x = floor(random(width));
-    shared.star.pos_y = floor(random(height));
+    shared.star.pos_x = floor(random(SITE.left, SITE.right));
+    shared.star.pos_y = floor(random(SITE.top, SITE.bottom));
     shared.star.isPicked = false;
   } else if (type == "center"){
-    shared.star.pos_x = width / 2;
-    shared.star.pos_y = height / 2;
+    shared.star.pos_x = (SITE.right + SITE.left) / 2;
+    shared.star.pos_y = (SITE.bottom + SITE.top) / 2;
     shared.star.isPicked = false;
   }
 }

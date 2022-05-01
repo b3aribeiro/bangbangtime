@@ -5,16 +5,18 @@ function updateBullet(bullet) {
     bullet.pos_y += vol * sin(dir);
 }
   
-  function drawBullet(bullet, canvas = window) {
+function drawBullet(bullet, canvas = window) {
     canvas.push();
-    canvas.fill(bullet.color, 180, 160);
+    canvas.strokeWeight(0.2);
+    canvas.stroke(0);
+    canvas.fill(220);
     canvas.ellipse(bullet.pos_x, bullet.pos_y, bullet.size);
     canvas.pop();
 }
 
 function ifInCanvas(obj) { // check if an bullet is in the canvas
     let x = obj.pos_x, y = obj.pos_y, s = obj.size;
-    if(x + s < 0 || x - s > width || y + s < 0 || y - s > height)
+    if(x + s < SITE.left || x - s > SITE.right || y + s < SITE.top || y - s > SITE.bottom)
       return false;
     else return true;
 }

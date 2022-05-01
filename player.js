@@ -13,6 +13,7 @@ function restartLocalPlayer() { // reset player state in a new GAME
   my.enabled = true; // enable the player
 }
 function resetLocalPlayer() { // reset player state in a new ROUND
+  if(my.enabled) {
     // create a new clone (start from the 2nd round)
     if(CLONE_MODE_ON && timer.roundCount > 1) {
       my.clones.push({
@@ -24,7 +25,8 @@ function resetLocalPlayer() { // reset player state in a new ROUND
         pos_y: my.startPos.y, // y postion
         vol_x: 0,
         vol_y: 0,
-        dir: random(360), // face direction
+        dir: "right", // face direction
+        ifMove: false,
         size: CHARACTER_SIZE,
         color: my.origin.color,
         reload: 0, // reloading cooldown timer
@@ -40,18 +42,26 @@ function resetLocalPlayer() { // reset player state in a new ROUND
         copy.hasStar = false;
         copy.pos_x = copy.startPos.x;
         copy.pos_y = copy.startPos.y;
+        copy.dir = "right";
+        copy.ifMove = false;
       }
     }
   
     my.alive = true;
     my.origin.hasStar = false;
-    my.origin.pos_x = random() < 0.5 ? 50 : width - 50;
-    my.origin.pos_y = random() < 0.5 ? 50 : height - 50;
+
+    // select a new spawn point
+    let newSpawn = [];
+    if(my.role === "player1") newSpawn = shared.spawnPts[timer.roundCount - 1];
+    else newSpawn = shared.spawnPts[shared.spawnPts.length / 2 + timer.roundCount - 1];
+    my.origin.pos_x = newSpawn[0];
+    my.origin.pos_y = newSpawn[1];
     my.startPos = {x: my.origin.pos_x, y: my.origin.pos_y};
     
     // create a new command collection
     local_commands.push([]);
   }
+}
   
 function trackPlayer(commands) {
   if(local_commands.length >= timer.roundCount && commands)
@@ -82,6 +92,9 @@ function mousePressed() {
       // calculate the aimming direction
       let vec = createVector(mouseX - my.origin.pos_x, mouseY - my.origin.pos_y);
       let direct = NORMAL_VEC.angleBetween(vec);
+      // change the player's direction
+      // if(mouseX > my.origin.pos_x && my.origin.dir === "left") my.origin.dir = "right";
+      // else if(mouseX < my.origin.pos_x && my.origin.dir === "right") my.origin.dir = "left";
       
       my.newBullet.push({ // create a new bullet
         id: my.id,
@@ -93,12 +106,12 @@ function mousePressed() {
         color: my.origin.color
       });
       // start reloading
-     my.origin.reload = RELOAD_TIMER; // start reloading
+      my.origin.reload = RELOAD_TIMER; // start reloading
   
       // add shoot command in this frame
-        if(CLONE_MODE_ON) {
-            let last_command = local_commands[local_commands.length - 1].length - 1;
-            local_commands[local_commands.length - 1][last_command].push(true);
-        }
+      if(CLONE_MODE_ON) {
+          let last_command = local_commands[local_commands.length - 1].length - 1;
+          local_commands[local_commands.length - 1][last_command].push(true);
+      }
     }
 }

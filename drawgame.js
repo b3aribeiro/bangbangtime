@@ -4,7 +4,7 @@ function drawGame(){
     background(220);
   
     if(shared.isRunning) {
-
+      image(ASSETS_MANAGER.get("background"), 0, 0); // always draw the background
       if (timer.roundState == "start"){
           if(timer.resetLocalPlayerFinished){ //draw game after reset has finished
 
@@ -27,8 +27,6 @@ function drawGame(){
 
         updateInbetweenTimer();
       }
-
-
     }
     
     if (!shared.isRunning) {
