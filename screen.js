@@ -24,6 +24,9 @@ function drawEndScreen(){
     textSize(30);
     textAlign(CENTER);
     text(`You ${result}`, 300, 200);
+
+    textSize(20);
+    text(`score: ${my.score}`, 300, 250);
     pop()
 
     //instructions to restart the game
@@ -46,4 +49,40 @@ function drawEndScreen(){
         pop()
         // console.log("LMK When it kits !shared with party host - game end")
       }
+}
+
+function drawInBetweenScreen(){
+  //display result of last round
+  let result = my.receiveScore ? 'You got it!' : 'Try again!';
+  push()
+  fill(0)
+  textSize(30);
+  textAlign(CENTER);
+  text(`${result}`, 300, 200);
+
+  textSize(20);
+  text(`current score: ${my.score}`, 300, 250);
+  pop()
+
+  //instructions to restart the game
+  if(partyIsHost()){
+    push()
+    fill(0)
+    textSize(20);
+    textAlign(CENTER);
+    text('Take control of your city, Sherif!', 300, 300);
+    text('Press ENTER to defend it.', 300, 330);
+    pop()
+    // console.log("LMK When it kits !shared with party host - game end")
+  }else{
+    push()
+    fill(0)
+    textSize(20);
+    textAlign(CENTER);
+    text('The Sherif looking for a bandit like you...', 300, 300);
+    text('Get ready to show who should control this town', 300, 320);
+    pop()
+    // console.log("LMK When it kits !shared with party host - game end")
+  }
+
 }

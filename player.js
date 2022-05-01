@@ -54,7 +54,7 @@ function resetLocalPlayer() { // reset player state in a new ROUND
   }
   
 function trackPlayer(commands) {
-  if(local_commands.length >= timer.roundCount)
+  if(local_commands.length >= timer.roundCount && commands)
     local_commands[local_commands.length - 1].push(commands);
 }
 
@@ -72,11 +72,12 @@ function stun(param) { // param: [entity id, repulsing direction]
 function keyPressed() {
     // when host presses ENTER, start Game
     if(partyIsHost() && keyIsDown(13) && !shared.isRunning) startGame(); 
+    if(partyIsHost() && keyIsDown(13) && shared.isRunning && timer.roundState == "inbetween") startRound(); 
 }
   
 function mousePressed() {
     // shoot a bullet
-    if(my.enabled && my.alive && my.origin.reload === 0 && my.origin.stunned === 0) {
+    if(my.enabled && my.alive && my.origin.reload === 0 && my.origin.stunned === 0 && timer.roundState !== "inbetween") {
 
       // calculate the aimming direction
       let vec = createVector(mouseX - my.origin.pos_x, mouseY - my.origin.pos_y);

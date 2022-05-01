@@ -4,16 +4,28 @@ function drawGame(){
     background(220);
   
     if(shared.isRunning) {
-      updateGameObjects();
-      updateGameVisual();
 
-      //GAME STATE MGMT:
-      //update timer
-      if(partyIsHost()){ 
-        updateTimer();
+      if (timer.roundState == "start"){
+          if(timer.resetLocalPlayerFinished){ //draw game after reset has finished
+
+            updateGameObjects();
+            updateGameVisual();
+      
+            //update timer
+            if(partyIsHost()){ 
+              updateTimer();
+            }
+            //display timer and rounds 
+            drawTimer();
+
+          }
+
+      }else{
+
+        //display in between screens;
+        drawInBetweenScreen();
       }
-      //display timer and rounds 
-      drawTimer();
+
 
     }
     

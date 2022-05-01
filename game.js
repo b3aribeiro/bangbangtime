@@ -29,20 +29,27 @@ function endGame() {
   shared.isRunning = false; // stop the game
 }
 
-function startRound() {
 
-  // initialize a new round
+function startRound(){
+
   resetRoundTimer();
-  
-  // reset all the players
-  setTimeout(function() {
-    partyEmit("resetLocalClients");
-  }, 100);
+
   // reset the position of the star
   resetStar("center");
 
   // clear all the bullets on the canvas
   partySetShared(bullets, {bullets: []});
+
+  // reset all the players
+  setTimeout(function() {
+    partyEmit("resetLocalClients");
+  }, 100);
+
+  // signal reset has finished
+  setTimeout(function() {  
+    timer.resetLocalPlayerFinished = true;
+  }, 300);
+    
 }
 
 // Local Client Management

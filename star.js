@@ -40,3 +40,22 @@ function starIsLost(body){
   resetStar("random");
   my.score --;
 }
+
+//check if my or my clones hasStar
+//called at the end of each round
+function ifHasStar(){
+
+    if(my.origin.hasStar) return true;
+
+    if  (my.clones.length > 0){ // also check if any of the player's clones has the star
+
+        for(let copy of my.clones) {
+          if(copy.hasStar) {
+            return true
+          }
+        }
+      }
+
+    return false;
+  
+}
