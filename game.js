@@ -30,19 +30,6 @@ function endGame() {
 }
 
 function startRound() {
-  // check who won this round
-  for(let p of participants) {
-    if(p.origin.hasStar)
-      p.score ++;
-    else { // also check if any of the player's clones has the star
-      for(let copy of p.clones) {
-        if(copy.hasStar) {
-          p.score ++;
-          break;
-        }
-      }
-    }
-  }
 
   // initialize a new round
   resetRoundTimer();
@@ -154,8 +141,7 @@ function updateEntity(body, commands) {
 
   // check if the entity collides the star
   if(!shared.star.isPicked && collideCheck(body, shared.star)) {
-    body.hasStar = true;
-    shared.star.isPicked = true; // set the star state to "picked"
+    starIsPicked(body)
   }
 }
 
@@ -175,16 +161,14 @@ function checkAwaitingInstruction() {
         my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
         // if the player has the star, reset position for badge
         if(my.origin.hasStar) {
-          my.origin.hasStar = false;
-          resetStar("random");
+          starIsLost(my.origin)
         }
       } else {
         let copy = my.clones[ID - 1];
         copy.alive = false; // kill the corresponding clone immediately
         // if the clone has the star, reset position for badge
         if(copy.hasStar) {
-          copy.hasStar = false;
-          resetStar("random");
+          starIsLost(copy)
         }
       }
     }

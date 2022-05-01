@@ -29,5 +29,14 @@ function resetStar(type){
   }
 }
 
+function starIsPicked(body){
+  shared.star.isPicked = true;
+  body.hasStar = true;
+  my.score ++;
+}
 
-
+function starIsLost(body){
+  body.hasStar = false;
+  resetStar("random");
+  my.score --;
+}
