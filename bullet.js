@@ -1,8 +1,8 @@
 // update the position of a bullet
 function updateBullet(bullet) {
-    let vol = bullet.vol, dir = bullet.dir;
-    bullet.pos_x += vol * cos(dir);
-    bullet.pos_y += vol * sin(dir);
+    let vel = bullet.vel, dir = bullet.dir;
+    bullet.pos_x += vel * cos(dir);
+    bullet.pos_y += vel * sin(dir);
 }
   
 function drawBullet(bullet, canvas = window) {

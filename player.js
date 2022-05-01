@@ -23,15 +23,15 @@ function resetLocalPlayer() { // reset player state in a new ROUND
         alive: true,
         pos_x: my.startPos.x, // x postion
         pos_y: my.startPos.y, // y postion
-        vol_x: 0,
-        vol_y: 0,
+        vel_x: 0,
+        vel_y: 0,
         dir: "right", // face direction
         ifMove: false,
         size: CHARACTER_SIZE,
         color: my.origin.color,
         reload: 0, // reloading cooldown timer
         stunned: 0, // stunned cooldown timer
-        hasStar: false // if the character has the star
+        hasBadge: false // if the character has the badge
       });
     }
     // reset all the clones
@@ -39,7 +39,7 @@ function resetLocalPlayer() { // reset player state in a new ROUND
       for(let copy of my.clones) {
         copy.frame = 0;
         copy.alive = true,
-        copy.hasStar = false;
+        copy.hasBadge = false;
         copy.pos_x = copy.startPos.x;
         copy.pos_y = copy.startPos.y;
         copy.dir = "right";
@@ -48,7 +48,7 @@ function resetLocalPlayer() { // reset player state in a new ROUND
     }
   
     my.alive = true;
-    my.origin.hasStar = false;
+    my.origin.hasBadge = false;
 
     // select a new spawn point
     let newSpawn = [];
@@ -100,7 +100,7 @@ function mousePressed() {
         id: my.id,
         pos_x: my.origin.pos_x, 
         pos_y: my.origin.pos_y,
-        vol: BULLET_VOL,
+        vel: BULLET_VEL,
         dir: direct,
         size: BULLET_SIZE,
         color: my.origin.color

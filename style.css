@@ -5,18 +5,17 @@ body, h1 {
   background-color: #000000;
 }
 
-h1 {
+/*h1 {
   text-align: center;
   color: #ffffff;
   font-family: 'Sancreek', cursive;
   font-size: 50px;
   margin: 5px;
-}
+}*/
 
 canvas {
   position: absolute;
   margin: auto;
   left: 0;
   right: 0;
-  top: 100px;
 }

@@ -20,7 +20,7 @@ var bullet_cooldown_id = {};
 
 // in-game parameters
 const CLONE_MODE_ON = true;
-const CHARACTER_SIZE = 40, BULLET_SIZE = 16, CHARACTER_ACL = 0.5, CHARACTER_VOL = 3, BULLET_VOL = 7, STAR_SIZE = 20;
+const CHARACTER_SIZE = 40, BULLET_SIZE = 14, CHARACTER_ACL = 0.5, CHARACTER_VEL = 3, BULLET_VEL = 10, BADGE_SIZE = 20;
 const RELOAD_TIMER = 60, STUNNED_TIMER = 40
 
 // canvas parameters
@@ -151,13 +151,13 @@ function joinGame() {
 
 function stepHost(){
   shared.isRunning = false;
-  shared.star = { // initialize the star
+  shared.badge = { // initialize the badge
     pos_x: (SITE.right + SITE.left) / 2,
     pos_y: (SITE.bottom + SITE.top) / 2,
-    vol_x: 0,
-    vol_y: 0,
+    vel_x: 0,
+    vel_y: 0,
     dir: random(360),
-    size: STAR_SIZE,
+    size: BADGE_SIZE,
     isPicked: false
   }
 
@@ -177,15 +177,15 @@ function initializePlayer(col = '255, 255, 255'){
   my.origin = {
     pos_x: -200, // x postion
     pos_y: -200, // y postion
-    vol_x: 0,
-    vol_y: 0,
+    vel_x: 0,
+    vel_y: 0,
     dir: "right", // face direction
     ifMove: false,
     size: CHARACTER_SIZE,
     color: col,
     reload: 0, // reloading cooldown timer
     stunned: 0, // stunned cooldown timer
-    hasStar: false // if the character has the star
+    hasBadge: false // if the character has the badge
   };
   
   my.newBullet = [], // bullets waiting to be update

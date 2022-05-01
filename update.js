@@ -41,7 +41,7 @@ function updateGameObjects(){
         });
       }
   
-      if(!shared.star.isPicked) updateStar(shared.star); // update star
+      if(!shared.badge.isPicked) updateBadge(shared.badge); // update badge
     }
   
     if(my.enabled) updateLocalClient(); // local update
@@ -64,8 +64,8 @@ function updateGameVisual() {
     // draw bullets
     if(bullets.bullets.length > 0)
       for(let bu of bullets.bullets) drawBullet(bu);
-    // draw the star
-    if(!shared.star.isPicked) drawStar(shared.star);
+    // draw the badge
+    if(!shared.badge.isPicked) drawBadge(shared.badge);
 }
 
 function collideCheck(obj1, obj2) { // check if 2 objects collide

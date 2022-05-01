@@ -50,8 +50,8 @@ function startRound(){
 
   resetRoundTimer();
 
-  // reset the position of the star
-  resetStar("center");
+  // reset the position of the badge
+  resetBadge("center");
 
   // clear all the bullets on the canvas
   partySetShared(bullets, {bullets: []});
@@ -78,7 +78,7 @@ function endRound(){
   timer.inbetweenCountdown = INBETWEEN_DURATION;
   timer.inbetweenFrame = 0;
 
-  my.receiveScore = ifHasStar() ? true : false; //check if has score this round
+  my.receiveScore = ifHasBadge() ? true : false; //check if has score this round
 
 }
 
@@ -129,25 +129,25 @@ function updateLocalClient() {
 function updateEntity(body, commands) {
   if(body.stunned <= 0) { // if the player is not stunned
     // check if the player is moving (if the velocity equals 0)
-    if(body.vol_x !== 0 || body.vol_y !== 0) body.ifMove = true;
+    if(body.vel_x !== 0 || body.vel_y !== 0) body.ifMove = true;
     else body.ifMove = false;
     // check the command (['LEFT', 'RIGHT', 'UP', 'DOWN', ${mouse_position}, ${ifShoot}])
-    if(abs(body.vol_x) < CHARACTER_VOL) {
+    if(abs(body.vel_x) < CHARACTER_VEL) {
       if(commands[0]) {
-        body.vol_x -= CHARACTER_ACL;
+        body.vel_x -= CHARACTER_ACL;
         if(body.dir === "right") body.dir = "left";
       }
       if(commands[1]) {
-        body.vol_x += CHARACTER_ACL;
+        body.vel_x += CHARACTER_ACL;
         if(body.dir === "left") body.dir = "right";
       }
     }
-    if(abs(body.vol_y) < CHARACTER_VOL) {
+    if(abs(body.vel_y) < CHARACTER_VEL) {
       if(commands[2]) {
-        body.vol_y -= CHARACTER_ACL;
+        body.vel_y -= CHARACTER_ACL;
       }
       if(commands[3]) {
-        body.vol_y += CHARACTER_ACL;
+        body.vel_y += CHARACTER_ACL;
       }
     }
     // if shoot(only check clones)
@@ -160,7 +160,7 @@ function updateEntity(body, commands) {
         id: body.cloneId,
         pos_x: body.pos_x, 
         pos_y: body.pos_y,
-        vol: BULLET_VOL,
+        vel: BULLET_VEL,
         dir: direct,
         size: BULLET_SIZE,
         color: body.color
@@ -171,27 +171,27 @@ function updateEntity(body, commands) {
   // update the entity's face direction
   // body.dir = NORMAL_VEC.angleBetween(commands[4]);
   // update the entity's position
-  body.pos_x += body.vol_x;
-  body.pos_y += body.vol_y;
+  body.pos_x += body.vel_x;
+  body.pos_y += body.vel_y;
   if(body.pos_x < SITE.left + body.size/2) body.pos_x = SITE.left + body.size/2;
   else if(body.pos_x > SITE.right - body.size/2) body.pos_x = SITE.right - body.size/2;
   if(body.pos_y < SITE.top + body.size/2) body.pos_y = SITE.top + body.size/2;
   else if(body.pos_y > SITE.bottom - body.size/2) body.pos_y = SITE.bottom - body.size/2;
   // update the entity's velocity
-  if(abs(body.vol_x) < CHARACTER_ACL / 2) body.vol_x = 0;
-  else if(body.vol_x > 0) body.vol_x -= CHARACTER_ACL / 2;
-  else if(body.vol_x < 0) body.vol_x += CHARACTER_ACL / 2;
-  if(abs(body.vol_y) < CHARACTER_ACL / 2) body.vol_y = 0;
-  else if(body.vol_y > 0) body.vol_y -= CHARACTER_ACL / 2;
-  else if(body.vol_y < 0) body.vol_y += CHARACTER_ACL / 2;
+  if(abs(body.vel_x) < CHARACTER_ACL / 2) body.vel_x = 0;
+  else if(body.vel_x > 0) body.vel_x -= CHARACTER_ACL / 2;
+  else if(body.vel_x < 0) body.vel_x += CHARACTER_ACL / 2;
+  if(abs(body.vel_y) < CHARACTER_ACL / 2) body.vel_y = 0;
+  else if(body.vel_y > 0) body.vel_y -= CHARACTER_ACL / 2;
+  else if(body.vel_y < 0) body.vel_y += CHARACTER_ACL / 2;
 
   // update reload & stunned timer
   if(body.reload > 0) body.reload --;
   if(body.stunned > 0) body.stunned --;
 
-  // check if the entity collides the star
-  if(!shared.star.isPicked && collideCheck(body, shared.star)) {
-    starIsPicked(body)
+  // check if the entity collides the badge
+  if(!shared.badge.isPicked && collideCheck(body, shared.badge)) {
+    badgeIsPicked(body)
   }
 }
 
@@ -207,18 +207,18 @@ function checkAwaitingInstruction() {
         my.origin.stunned = STUNNED_TIMER; // stun the player
         // repulse the player
         let newDir = parseInt(cmds[2]);
-        my.origin.vol_x = cos(newDir) * CHARACTER_VOL;
-        my.origin.vol_y = sin(newDir) * CHARACTER_VOL;
-        // if the player has the star, reset position for badge
-        if(my.origin.hasStar) {
-          starIsLost(my.origin)
+        my.origin.vel_x = cos(newDir) * CHARACTER_VEL;
+        my.origin.vel_y = sin(newDir) * CHARACTER_VEL;
+        // if the player has the badge, reset position for badge
+        if(my.origin.hasBadge) {
+          badgeIsLost(my.origin)
         }
       } else {
         let copy = my.clones[ID - 1];
         copy.alive = false; // kill the corresponding clone immediately
-        // if the clone has the star, reset position for badge
-        if(copy.hasStar) {
-          starIsLost(copy)
+        // if the clone has the badge, reset position for badge
+        if(copy.hasBadge) {
+          badgeIsLost(copy)
         }
       }
     }
@@ -259,7 +259,7 @@ function drawEntity(body, canvas = window) {
   else canvas.fill("rgb(" + body.color + ")");
   canvas.rect(body.pos_x, body.pos_y + 11, 43, 16);
   // draw the badge
-  if(body.hasStar) canvas.image(ASSETS_MANAGER.get("minibadge"), body.pos_x, body.pos_y + 8);
+  if(body.hasBadge) canvas.image(ASSETS_MANAGER.get("minibadge"), body.pos_x, body.pos_y + 20);
   canvas.pop();
 }
 
