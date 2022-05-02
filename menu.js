@@ -19,11 +19,11 @@ function  menuScreen(){
         case 4: //tutorial 4
         image(ASSETS_MANAGER.get("tutorial_4"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             break;
-        case 5: //credits
-        image(ASSETS_MANAGER.get("credits"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        case 5: //tutorial 5
+        image(ASSETS_MANAGER.get("tutorial_5"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             break;
         case 6: //credits
-        image(ASSETS_MANAGER.get("screen_menu"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        image(ASSETS_MANAGER.get("screen_credits"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             break;
     }
 }
@@ -43,24 +43,23 @@ function mouseClicked(){
         } else if (mouseX >= 519 && mouseX <= 660 && mouseY >= 177 && mouseY <= 365){
             screen = 1;
         } else if (mouseX >= 355 && mouseX <= 507 && mouseY >= 392 && mouseY <= 559){
-            screen = 5;
+            screen = 6;
         }
-    } else if(screen >= 1 && screen <= 3){
+    } else if(screen >= 1 && screen <= 4){
         if(mouseX > SCREEN_WIDTH/2){
             screen++;
         } else{
             screen--;
         }
-    } else if (screen == 4){
+    } else if (screen == 5){
         if(mouseX > SCREEN_WIDTH/2){
-            console.log("menu");
             screen = 0;
         } else if (mouseX < SCREEN_WIDTH/2){
             screen--;
         }
-    } else if (screen == 5){ 
+    } else if (screen == 6){ 
         if(mouseX > 0 && mouseX < SCREEN_WIDTH) screen = 0;
     }
 
-    if(screen > 5) screen = 0;
+    if(screen > 6) screen = 0;
 }

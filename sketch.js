@@ -64,13 +64,13 @@ function preload() {
   ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
   ASSETS_MANAGER.set("screen_menu", loadImage('assets/screen_menu.png'));
   ASSETS_MANAGER.set("screen_credits", loadImage('assets/screen_credits.png'));
-  ASSETS_MANAGER.set("credits", loadImage('assets/credits.png'));
 
   
   ASSETS_MANAGER.set("tutorial_1", loadImage('assets/tutorial_1.png'));
   ASSETS_MANAGER.set("tutorial_2", loadImage('assets/tutorial_2.png'));
   ASSETS_MANAGER.set("tutorial_3", loadImage('assets/tutorial_3.png'));
   ASSETS_MANAGER.set("tutorial_4", loadImage('assets/tutorial_4.png'));
+  ASSETS_MANAGER.set("tutorial_5", loadImage('assets/tutorial_5.png'));
 }
 
 function loadAnim(path, num) { // load a series of png as an array
