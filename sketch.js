@@ -10,7 +10,7 @@ let my;
 var ASSETS_MANAGER;
 
 // global state
-let gameState = "TITLE"; // TITLE, PLAYING
+let gameState = "TITLE"; // TITLE, MENU, PLAYING
 
 // general local parameters
 var NORMAL_VEC; // this is how we control the direction of the bullet
@@ -64,6 +64,12 @@ function preload() {
   ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
   ASSETS_MANAGER.set("screen_menu", loadImage('assets/screen_menu.png'));
   ASSETS_MANAGER.set("screen_credits", loadImage('assets/screen_credits.png'));
+
+  
+  ASSETS_MANAGER.set("tutorial_1", loadImage('assets/tutorial_1.png'));
+  ASSETS_MANAGER.set("tutorial_2", loadImage('assets/tutorial_2.png'));
+  ASSETS_MANAGER.set("tutorial_3", loadImage('assets/tutorial_3.png'));
+  ASSETS_MANAGER.set("tutorial_4", loadImage('assets/tutorial_4.png'));
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -83,8 +89,8 @@ function setup() {
   noStroke();
 
   NORMAL_VEC = createVector(1, 0);
-  
-  //partyToggleInfo(false);
+
+  partyToggleInfo(false);
   
   if (partyIsHost()) { 
     stepHost();       
@@ -102,25 +108,21 @@ function setup() {
 }
 
 function draw() {
-  if (gameState === "TITLE" && room == null) {
-    image(ASSETS_MANAGER.get("screen_logo"), 0, 0);
-  } else if (gameState === "PLAYING" || room != null) {
-      background("#CF960B");
+  background("#CF960B");
 
-      if (room == null) { 
-        image(ASSETS_MANAGER.get("screen_room"), 50, 150);
-      } else {
-          if (my.role !== "player1" && my.role !== "player2") {
-            joinGame();
-            return;
-          }
-    
-          background("rgb(0,0,0)");
-          drawGame();
-      }
-
+  if(gameState === "PLAYING") {
+    if (my.role !== "player1" && my.role !== "player2") {
+      joinGame();
+      return;
+    }
+    drawGame();
+  } else if (gameState === "TITLE" && room == null) {
+    titleScreen();
+  } else if (gameState === "MENU" && room == null) {
+    roomScreen();
+  } else if (gameState === "MENU" || room != null) {
+    menuScreen();
   }
-
 }
 
 function joinGame() {
@@ -129,6 +131,7 @@ function joinGame() {
     return;
   }
 
+  // if there is no player, attribute role
   if (!participants.find((p) => p.role === "player1")) {
     my.role = "player1";
     initializePlayer("179, 47, 47");
@@ -154,7 +157,6 @@ function stepHost(){
   }
 
   resetGameTimer();
-
   bullets.bullets = [];
 }
 
@@ -187,6 +189,6 @@ function initializePlayer(col = '255, 255, 255'){
 
 function mouseReleased() {
   if (gameState === "TITLE") {
-    gameState = "PLAYING";
+    gameState = "MENU";
   }
 }
