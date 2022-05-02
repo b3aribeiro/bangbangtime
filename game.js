@@ -34,8 +34,6 @@ function initSpawnPoints() {
 }
 
 function endGame() {
-  // check who is the winner
-  whoIsWinner();
 
   for(let p of participants) {
     p.enabled = false; // disable the player
@@ -71,14 +69,11 @@ function startRound(){
 
 function endRound(){
 
-
   timer.roundState = 'inbetween';
   timer.resetLocalPlayerFinished = false;
 
   timer.inbetweenCountdown = INBETWEEN_DURATION;
   timer.inbetweenFrame = 0;
-
-  my.receiveScore = ifHasBadge() ? true : false; //check if has score this round
 
 }
 
@@ -269,9 +264,15 @@ function whoIsWinner() { // make the player who has the highest score become win
     if(p.score > highscore) highscore = p.score;
   }
   for(let p of participants) {
-    console.log("participants", p.score, "highscroe", highscore)
-    if(p.score === highscore) p.isWin = true;
+  
+    if(p.score == highscore) p.isWin = true;
   }
 
-  console.log(highscore)
+}
+
+function whoIsRoundWinner(){
+
+  for(let p of participants) {
+    p.receiveScore = ifHasBadge(p) ? true : false; //check if has score this round
+  }
 }

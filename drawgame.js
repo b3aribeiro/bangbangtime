@@ -25,7 +25,11 @@ function drawGame(){
         //display in between screens;
         drawInBetweenScreen();
 
-        updateInbetweenTimer();
+        //update timer
+        if(partyIsHost()){ 
+          updateInbetweenTimer();
+        }
+      
       }
     }
     

@@ -18,6 +18,9 @@ function drawStartScreen(){
 
 function drawEndScreen(){
     //display win/lose result
+    if(partyIsHost()){
+      whoIsWinner();
+    }
     let result = my.isWin ? 'win!' : 'lose!';
     push()
     fill(0)
@@ -52,6 +55,10 @@ function drawEndScreen(){
 }
 
 function drawInBetweenScreen(){
+
+  if (partyIsHost()){
+    whoIsRoundWinner();
+  }
   //display result of last round
   let result = my.receiveScore ? 'You got it!' : 'Try again!';
   push()

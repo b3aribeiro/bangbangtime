@@ -44,15 +44,15 @@ function badgeIsLost(body){
   my.score --;
 }
 
-//check if my or my clones hasBadge
+//check if this player or player's clones hasBadge
 //called at the end of each round
-function ifHasBadge(){
+function ifHasBadge(p){
 
-    if(my.origin.hasBadge) return true;
+    if(p.origin.hasBadge) return true;
 
-    if  (my.clones.length > 0){ // also check if any of the player's clones has the badge
+    if  (p.clones.length > 0){ // also check if any of the player's clones has the badge
 
-        for(let copy of my.clones) {
+        for(let copy of p.clones) {
           if(copy.hasBadge) {
             return true
           }
