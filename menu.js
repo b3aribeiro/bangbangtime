@@ -20,7 +20,10 @@ function  menuScreen(){
         image(ASSETS_MANAGER.get("tutorial_4"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             break;
         case 5: //credits
-        image(ASSETS_MANAGER.get("screen_credits"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        image(ASSETS_MANAGER.get("credits"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+            break;
+        case 6: //credits
+        image(ASSETS_MANAGER.get("screen_menu"), SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
             break;
     }
 }

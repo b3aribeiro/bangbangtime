@@ -64,6 +64,7 @@ function preload() {
   ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
   ASSETS_MANAGER.set("screen_menu", loadImage('assets/screen_menu.png'));
   ASSETS_MANAGER.set("screen_credits", loadImage('assets/screen_credits.png'));
+  ASSETS_MANAGER.set("credits", loadImage('assets/credits.png'));
 
   
   ASSETS_MANAGER.set("tutorial_1", loadImage('assets/tutorial_1.png'));
@@ -109,6 +110,7 @@ function setup() {
 
 function draw() {
   background("#CF960B");
+  rectMode(CENTER);
 
   if(gameState === "PLAYING") {
     if (my.role !== "player1" && my.role !== "player2") {
