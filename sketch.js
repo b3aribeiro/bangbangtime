@@ -10,7 +10,7 @@ let my;
 var ASSETS_MANAGER;
 
 // global state
-//let gameState = "PLAYING"; // TITLE, PLAYING
+let gameState = "TITLE"; // TITLE, PLAYING
 
 // general local parameters
 var NORMAL_VEC; // this is how we control the direction of the bullet
@@ -58,6 +58,12 @@ function preload() {
   ASSETS_MANAGER.set("minibadge", loadImage('assets/minibadge.png'));
   ASSETS_MANAGER.set("badge", loadImage('assets/badge.png'));
   ASSETS_MANAGER.set("background", loadImage('assets/background.png'));
+
+  
+  ASSETS_MANAGER.set("screen_room", loadImage('assets/screen_room.png'));
+  ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
+  ASSETS_MANAGER.set("screen_menu", loadImage('assets/screen_menu.png'));
+  ASSETS_MANAGER.set("screen_credits", loadImage('assets/screen_credits.png'));
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -96,39 +102,25 @@ function setup() {
 }
 
 function draw() {
-  
-  background("rgb(202,44,44)");
-  
-  if (room == null) { 
+  if (gameState === "TITLE" && room == null) {
+    image(ASSETS_MANAGER.get("screen_logo"), 0, 0);
+  } else if (gameState === "PLAYING" || room != null) {
+      background("#CF960B");
 
-    noStroke();
-    textSize(20);
-    fill(0);
-    text("create/choose a room", width/2, height/3 - 50);
-    text("using the input ", width/2, height/3 - 25);
-    text("field above", width/2, height/3);
+      if (room == null) { 
+        image(ASSETS_MANAGER.get("screen_room"), 50, 150);
+      } else {
+          if (my.role !== "player1" && my.role !== "player2") {
+            joinGame();
+            return;
+          }
     
-  } else {
-    
-    background("rgb(218,218,36)");
+          background("rgb(0,0,0)");
+          drawGame();
+      }
 
-    if (my.role !== "player1" && my.role !== "player2") {
-        joinGame();
-        return;
-    }
-
-   // if(!shared.isRunning) {
-    //if (gameState === "TITLE") {
-    background("rgb(42,185,42)");
-    // drawTitleScreen();
-   // }
-
-   // if(shared.gameState) {
-    //if (gameState === "PLAYING") {
-    background("rgb(0,0,0)");
-    drawGame();
-    //}
   }
+
 }
 
 function joinGame() {
@@ -191,4 +183,10 @@ function initializePlayer(col = '255, 255, 255'){
   my.newBullet = [], // bullets waiting to be update
   my.startPos = {x: 0, y: 0};
   my.clones = [];
+}
+
+function mouseReleased() {
+  if (gameState === "TITLE") {
+    gameState = "PLAYING";
+  }
 }
