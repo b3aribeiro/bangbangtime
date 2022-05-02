@@ -3,6 +3,7 @@
 function drawGame(){
   
     if(shared.isRunning) {
+      partyToggleInfo(false);
       image(ASSETS_MANAGER.get("background"), 0, 0); // always draw the background
       if (timer.roundState == "start"){
           if(timer.resetLocalPlayerFinished){ //draw game after reset has finished
@@ -40,6 +41,7 @@ function drawGame(){
 
       } else { 
         // game over
+        partyToggleInfo(true);
         drawEndScreen();
 
       }

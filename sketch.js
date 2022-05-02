@@ -124,6 +124,7 @@ function draw() {
   } else if (gameState === "MENU" && room == null) {
     roomScreen();
   } else if (gameState === "MENU" || room != null) {
+    partyToggleInfo(true);
     menuScreen();
   }
 }
