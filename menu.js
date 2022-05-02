@@ -41,7 +41,7 @@ function mouseClicked(){
         if (mouseX >= 210 && mouseX <= 352 && mouseY >= 175 && mouseY <= 352){
             gameState = "PLAYING";
         } else if (mouseX >= 519 && mouseX <= 660 && mouseY >= 177 && mouseY <= 365){
-            screen++;
+            screen = 1;
         } else if (mouseX >= 355 && mouseX <= 507 && mouseY >= 392 && mouseY <= 559){
             screen = 5;
         }
@@ -53,9 +53,9 @@ function mouseClicked(){
         }
     } else if (screen == 4){
         if(mouseX > SCREEN_WIDTH/2){
+            console.log("menu");
             screen = 0;
-            screen = 0;
-        } else{
+        } else if (mouseX < SCREEN_WIDTH/2){
             screen--;
         }
     } else if (screen == 5){ 

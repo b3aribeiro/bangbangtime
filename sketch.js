@@ -110,6 +110,7 @@ function setup() {
 
 function draw() {
   background("#CF960B");
+  imageMode(CORNER);
   rectMode(CENTER);
 
   if(gameState === "PLAYING") {
