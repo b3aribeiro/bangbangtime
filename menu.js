@@ -45,7 +45,7 @@ function mouseClicked(){
         } else if (mouseX >= 355 && mouseX <= 507 && mouseY >= 392 && mouseY <= 559){
             screen = 5;
         }
-    } else if(screen >= 1 || screen <= 3){
+    } else if(screen >= 1 && screen <= 3){
         if(mouseX > SCREEN_WIDTH/2){
             screen++;
         } else{
@@ -59,7 +59,7 @@ function mouseClicked(){
             screen--;
         }
     } else if (screen == 5){ 
-        if(mouseX > 0 || mouseX < SCREEN_WIDTH) screen = 0;
+        if(mouseX > 0 && mouseX < SCREEN_WIDTH) screen = 0;
     }
 
     if(screen > 5) screen = 0;
