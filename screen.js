@@ -21,10 +21,13 @@ function drawEndScreen(){
   if(partyIsHost()){
     whoIsWinner();
   }
-
+  
   for(let p of participants) {
     if (p.role == "player1" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
-    else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+    else if (p.role == "player1" && p.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+
+    if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+    else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
   }
 
   //instructions to restart the game
@@ -73,7 +76,6 @@ function whoIsWinner() { // make the player who has the highest score become win
   for(let p of participants) {
     if(p.score == highscore) p.isWin = true;
   }
-
 }
 
 function whoIsRoundWinner(){
