@@ -257,22 +257,3 @@ function drawEntity(body, canvas = window) {
   if(body.hasBadge) canvas.image(ASSETS_MANAGER.get("minibadge"), body.pos_x, body.pos_y + 20);
   canvas.pop();
 }
-
-function whoIsWinner() { // make the player who has the highest score become winner
-  let highscore = 0;
-  for(let p of participants) {
-    if(p.score > highscore) highscore = p.score;
-  }
-  for(let p of participants) {
-  
-    if(p.score == highscore) p.isWin = true;
-  }
-
-}
-
-function whoIsRoundWinner(){
-
-  for(let p of participants) {
-    p.receiveScore = ifHasBadge(p) ? true : false; //check if has score this round
-  }
-}

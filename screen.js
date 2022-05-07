@@ -17,41 +17,26 @@ function drawStartScreen(){
 
 
 function drawEndScreen(){
-    //display win/lose result
-    if(partyIsHost()){
-      whoIsWinner();
-    }
-    let result = my.isWin ? 'win!' : 'lose!';
-    push()
-    fill(0)
-    textSize(30);
-    textAlign(CENTER);
-    text(`You ${result}`, width / 2, height / 2 - 100);
+  //display win/lose result
+  if(partyIsHost()){
+    whoIsWinner();
+  }
 
-    textSize(20);
-    text(`score: ${my.score}`, width / 2, height / 2 - 50);
-    pop()
+  for(let p of participants) {
+    if (p.role == "player1" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+    else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+  }
 
-    //instructions to restart the game
-    if(partyIsHost()){
-        push()
-        fill(0)
-        textSize(20);
-        textAlign(CENTER);
-        text('Take control of your city, Sherif!', width / 2, height / 2);
-        text('Press ENTER to defend it.', width / 2, height / 2 + 30);
-        pop()
-        // console.log("LMK When it kits !shared with party host - game end")
-      }else{
-        push()
-        fill(0)
-        textSize(20);
-        textAlign(CENTER);
-        text('The Sherif looking for a bandit like you...', width / 2, height / 2);
-        text('Get ready to show who should control this town', width / 2, height / 2 + 20);
-        pop()
-        // console.log("LMK When it kits !shared with party host - game end")
-      }
+  //instructions to restart the game
+  if(partyIsHost()){
+      push()
+      fill(0)
+      textSize(20);
+      textAlign(CENTER);
+      text('Press ENTER to Restart', width / 2, height - 200);
+      pop()
+      // console.log("LMK When it kits !shared with party host - game end")
+  }
 }
 
 function drawInBetweenScreen(){
@@ -76,4 +61,24 @@ function drawInBetweenScreen(){
   //instructions to restart the game
 
 
+}
+
+function whoIsWinner() { // make the player who has the highest score become winner
+  let highscore = 0;
+
+  for(let p of participants) {
+    if(p.score > highscore) highscore = p.score;
+  }
+
+  for(let p of participants) {
+    if(p.score == highscore) p.isWin = true;
+  }
+
+}
+
+function whoIsRoundWinner(){
+
+  for(let p of participants) {
+    p.receiveScore = ifHasBadge(p) ? true : false; //check if has score this round
+  }
 }

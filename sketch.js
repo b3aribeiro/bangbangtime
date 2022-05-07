@@ -53,12 +53,15 @@ function preload() {
   ASSETS_MANAGER = new Map();
   ASSETS_MANAGER.set("font", loadFont('assets/sancreek.ttf'));
   
-  ASSETS_MANAGER.set("player_left", loadImage('assets/player_left.png'));
-  ASSETS_MANAGER.set("player_right", loadImage('assets/player_right.png'));
-  ASSETS_MANAGER.set("minibadge", loadImage('assets/minibadge.png'));
-  ASSETS_MANAGER.set("badge", loadImage('assets/badge.png'));
   ASSETS_MANAGER.set("background", loadImage('assets/background.png'));
 
+  ASSETS_MANAGER.set("player_left", loadImage('assets/player_left.png'));
+  ASSETS_MANAGER.set("player_right", loadImage('assets/player_right.png'));
+
+  ASSETS_MANAGER.set("minibadge", loadImage('assets/minibadge.png'));
+  ASSETS_MANAGER.set("badge", loadImage('assets/badge.png'));
+  //missing stunned effect
+  //missing reload effect
   
   ASSETS_MANAGER.set("screen_room", loadImage('assets/screen_room.png'));
   ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
@@ -71,6 +74,12 @@ function preload() {
   ASSETS_MANAGER.set("tutorial_3", loadImage('assets/tutorial_3.png'));
   ASSETS_MANAGER.set("tutorial_4", loadImage('assets/tutorial_4.png'));
   ASSETS_MANAGER.set("tutorial_5", loadImage('assets/tutorial_5.png'));
+
+
+  ASSETS_MANAGER.set("win_red", loadImage('assets/red_wins.png'));
+  ASSETS_MANAGER.set("win_blue", loadImage('assets/blue_wins.png'));
+
+  ASSETS_MANAGER.set("hud", loadImage('assets/hud.png'));
 }
 
 function loadAnim(path, num) { // load a series of png as an array
