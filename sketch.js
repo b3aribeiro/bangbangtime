@@ -60,8 +60,10 @@ function preload() {
 
   ASSETS_MANAGER.set("minibadge", loadImage('assets/minibadge.png'));
   ASSETS_MANAGER.set("badge", loadImage('assets/badge.png'));
-  //missing stunned effect
-  //missing reload effect
+  ASSETS_MANAGER.set("stunned1", loadImage('assets/stunned_1.png'));
+  ASSETS_MANAGER.set("stunned2", loadImage('assets/stunned_2.png'));
+  ASSETS_MANAGER.set("stunned3", loadImage('assets/stunned_3.png'));
+  ASSETS_MANAGER.set("arrow", loadImage('assets/arrow.png'));
   
   ASSETS_MANAGER.set("screen_room", loadImage('assets/screen_room.png'));
   ASSETS_MANAGER.set("screen_logo", loadImage('assets/screen_logo.png'));
@@ -80,6 +82,9 @@ function preload() {
   ASSETS_MANAGER.set("win_blue", loadImage('assets/blue_wins.png'));
 
   ASSETS_MANAGER.set("hud", loadImage('assets/hud.png'));
+
+  // sound effects
+  ASSETS_MANAGER.set("sound_stunned", loadSound('sound/skill-dizzy.mp3'))
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -93,7 +98,6 @@ function setup() {
   frameRate(FRAME_RATE);
   angleMode(DEGREES);
   colorMode(HSB, 255);
-  rectMode(CENTER);
   textAlign(CENTER,CENTER);
   textFont(ASSETS_MANAGER.get("font"));
   noStroke();
@@ -120,7 +124,6 @@ function setup() {
 function draw() {
   background("#CF960B");
   imageMode(CORNER);
-  rectMode(CENTER);
 
   if(gameState === "PLAYING") {
     if (my.role !== "player1" && my.role !== "player2") {
@@ -182,6 +185,7 @@ function initializePlayer(col = '255, 255, 255'){
 
   // initialize the character
   my.origin = {
+    id: my.id,
     pos_x: -200, // x postion
     pos_y: -200, // y postion
     vel_x: 0,

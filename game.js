@@ -208,6 +208,7 @@ function checkAwaitingInstruction() {
         if(my.origin.hasBadge) {
           badgeIsLost(my.origin)
         }
+        ASSETS_MANAGER.get("sound_stunned").play(); // play stunned sound (LOCAL)
       } else {
         let copy = my.clones[ID - 1];
         copy.alive = false; // kill the corresponding clone immediately
@@ -228,17 +229,30 @@ function drawEntity(body, canvas = window) {
   canvas.fill(20, 130);
   canvas.ellipse(body.pos_x, body.pos_y + 27, 64, 20);
   if(body.reload > 0) { // draw reloading bar
-    canvas.fill(120, 220, 120);
-    canvas.rect(body.pos_x, body.pos_y - 32, body.reload / RELOAD_TIMER * CHARACTER_SIZE, 8);
+    let bar_size = CHARACTER_SIZE + 12;
+    let corner = body.pos_x - bar_size / 2;
+    canvas.fill("#FDFEF");
+    canvas.rect(corner, body.pos_y - CHARACTER_SIZE * 1.4, bar_size, 16);
+    canvas.fill("#310604");
+    canvas.rect(corner + (1 - body.reload / RELOAD_TIMER) * bar_size, body.pos_y - CHARACTER_SIZE * 1.4, body.reload / RELOAD_TIMER * bar_size, 16);
   }
-  if(body.stunned > 0) { // draw stunned bar
-    canvas.fill(220, 120, 120);
-    canvas.rect(body.pos_x, body.pos_y - 42, body.stunned / STUNNED_TIMER * CHARACTER_SIZE, 8);
+  if(body.stunned > 0) { // draw stunned effect
+    let count = frameCount % 24, img;
+    if(count < 8) {
+      img = ASSETS_MANAGER.get("stunned1");
+    } else if(count < 16 && count >= 8) {
+      img = ASSETS_MANAGER.get("stunned2");
+    } else if(count >= 16) {
+      img = ASSETS_MANAGER.get("stunned3");
+    }
+    canvas.imageMode(CENTER);
+    canvas.image(img, body.pos_x, body.pos_y - CHARACTER_SIZE * 1.2);
   }
   canvas.pop();
 
   // draw the player avatar
   canvas.push();
+  canvas.rectMode(CENTER);
   canvas.imageMode(CENTER);
   if(body.ifMove && frameCount % 16 < 8) canvas.translate(0, -4);
   switch(body.dir) {
@@ -251,7 +265,11 @@ function drawEntity(body, canvas = window) {
   }
   // draw the cloth
   if(body.hasOwnProperty("cloneId")) canvas.fill("rgba(" + body.color + ", 0.65)"); // if it's a clone, make it a little transparent 
-  else canvas.fill("rgb(" + body.color + ")");
+  else {
+    // mark the player themself
+    if(body.id === my.id) image(ASSETS_MANAGER.get("arrow"), body.pos_x, body.pos_y - CHARACTER_SIZE * 1.8);
+    canvas.fill("rgb(" + body.color + ")");
+  }
   canvas.rect(body.pos_x, body.pos_y + 11, 43, 16);
   // draw the badge
   if(body.hasBadge) canvas.image(ASSETS_MANAGER.get("minibadge"), body.pos_x, body.pos_y + 20);
