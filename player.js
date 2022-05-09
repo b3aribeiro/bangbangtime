@@ -88,7 +88,9 @@ function keyPressed() {
 function mousePressed() {
     // shoot a bullet
     if(my.enabled && my.alive && my.origin.reload === 0 && my.origin.stunned === 0 && timer.roundState == "start" && timer.resetLocalPlayerFinished) {
-
+      
+      partyEmit("playSound", "sound_shoot");
+      
       // calculate the aimming direction
       let vec = createVector(mouseX - my.origin.pos_x, mouseY - my.origin.pos_y);
       let direct = NORMAL_VEC.angleBetween(vec);

@@ -85,6 +85,8 @@ function preload() {
 
   // sound effects
   ASSETS_MANAGER.set("sound_stunned", loadSound('sound/skill-dizzy.mp3'))
+  ASSETS_MANAGER.set("sound_shoot", loadSound('sound/shoot.wav'))
+  ASSETS_MANAGER.set("music", loadSound('sound/8BIT-AC-KKWestern.wav'))
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -101,6 +103,8 @@ function setup() {
   textAlign(CENTER,CENTER);
   textFont(ASSETS_MANAGER.get("font"));
   noStroke();
+
+  partySubscribe("playSound", onPlaySound);
 
   NORMAL_VEC = createVector(1, 0);
 
@@ -150,6 +154,7 @@ function joinGame() {
   // if there is no player, attribute role
   if (!participants.find((p) => p.role === "player1")) {
     my.role = "player1";
+
     initializePlayer("179, 47, 47");
     return;
   }
@@ -208,4 +213,10 @@ function mouseReleased() {
   if (gameState === "TITLE") {
     gameState = "MENU";
   }
+}
+
+function onPlaySound(name) {
+  console.log("onPlaySound", name);
+
+  ASSETS_MANAGER.get(name).play();
 }
