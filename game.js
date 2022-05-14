@@ -36,7 +36,7 @@ function initSpawnPoints() {
 function endGame() {
 
   for(let p of participants) {
-    p.enabled = false; // disable the player
+    p.enabled = false; // disable all the players
   }
 
   shared.isRunning = false; // stop the game

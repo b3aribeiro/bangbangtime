@@ -1,18 +1,23 @@
 function drawStartScreen(){
-    if(partyIsHost()){
-        push()
-        textSize(30);
-        text('Take control of your city, Sherif!', width / 2, height / 2);
-        text('Press ENTER to defend it.', width / 2, height / 2 + 30);
-        pop()
-
-      }else{
-        push()
-        textSize(20);
-        text('The Sherif looking for a bandit like you...', width / 2, height / 2);
-        text('Get ready to show who should control this town', width / 2, height / 2 + 30);
-        pop()
-      }
+    if(partyIsHost()) {
+      push()
+      textSize(30);
+      text('Take control of your city, Sherif!', width / 2, height / 2);
+      text('Press ENTER to defend it.', width / 2, height / 2 + 30);
+      pop()
+    } else if(my.role !== "observer") {
+      push()
+      textSize(20);
+      text('The Sherif looking for a bandit like you...', width / 2, height / 2);
+      text('Get ready to show who should control this town', width / 2, height / 2 + 30);
+      pop()
+    } else {
+      push()
+      textSize(20);
+      text('The room is already full', width / 2, height / 2);
+      text('Please wait for the next round', width / 2, height / 2 + 30);
+      pop()
+    }
 }
 
 
@@ -23,11 +28,13 @@ function drawEndScreen(){
   }
   
   for(let p of participants) {
-    if (p.role == "player1" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
-    else if (p.role == "player1" && p.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
-
-    if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
-    else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+    if(p.role !== "observer") {
+      if (p.role == "player1" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+      else if (p.role == "player1" && p.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+  
+      if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+      else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+    }
   }
 
   //instructions to restart the game

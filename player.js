@@ -10,7 +10,7 @@ function restartLocalPlayer() { // reset player state in a new GAME
   // clear all the clones
   my.clones = [];
 
-  my.enabled = true; // enable the player
+  if(my.role !== "observer") my.enabled = true; // enable the players who are not observers
 }
 function resetLocalPlayer() { // reset player state in a new ROUND
   if(my.enabled) {
