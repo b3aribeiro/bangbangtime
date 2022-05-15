@@ -84,9 +84,15 @@ function preload() {
   ASSETS_MANAGER.set("hud", loadImage('assets/hud.png'));
 
   // sound effects
-  ASSETS_MANAGER.set("sound_stunned", loadSound('sound/skill-dizzy.mp3'))
-  ASSETS_MANAGER.set("sound_shoot", loadSound('sound/shoot.wav'))
-  ASSETS_MANAGER.set("music", loadSound('sound/8BIT-AC-KKWestern.wav'))
+  ASSETS_MANAGER.set("sound_stunned", loadSound('sound/skill-dizzy.mp3'));
+  ASSETS_MANAGER.set("sound_shoot", loadSound('sound/shoot.wav'));
+  ASSETS_MANAGER.set("sound_reload", loadSound('sound/revolver-cocking.wav'));
+  ASSETS_MANAGER.set("sound_shoot_noammo", loadSound('sound/out-of-ammo.wav'));
+  ASSETS_MANAGER.set("sound_injure", loadSound('sound/man-getting-hit.wav'));
+  ASSETS_MANAGER.set("sound_move", loadSound('sound/jump-sound.wav'));
+  ASSETS_MANAGER.set("sound_pickup", loadSound('sound/sfx_coin_double5.wav'));
+
+  // ASSETS_MANAGER.set("music", loadSound('sound/8BIT-AC-KKWestern.wav'))
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -103,8 +109,6 @@ function setup() {
   textAlign(CENTER,CENTER);
   textFont(ASSETS_MANAGER.get("font"));
   noStroke();
-
-  partySubscribe("playSound", onPlaySound);
 
   NORMAL_VEC = createVector(1, 0);
 
@@ -123,6 +127,7 @@ function setup() {
   partySubscribe("restartLocalClients", restartLocalPlayer);
   partySubscribe("clearBullets", clearBullets);
   partySubscribe("stun", stun);
+  partySubscribe("playSound", onPlaySound);
 }
 
 function draw() {

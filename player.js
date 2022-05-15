@@ -89,7 +89,8 @@ function mousePressed() {
     // shoot a bullet
     if(my.enabled && my.alive && my.origin.reload === 0 && my.origin.stunned === 0 && timer.roundState == "start" && timer.resetLocalPlayerFinished) {
       
-      partyEmit("playSound", "sound_shoot");
+      partyEmit("playSound", "sound_shoot"); // play shooting sound (GLOBAL)
+      ASSETS_MANAGER.get("sound_reload").play(); // play reloading sound (LOCAL)
       
       // calculate the aimming direction
       let vec = createVector(mouseX - my.origin.pos_x, mouseY - my.origin.pos_y);
@@ -115,5 +116,7 @@ function mousePressed() {
           let last_command = local_commands[local_commands.length - 1].length - 1;
           local_commands[local_commands.length - 1][last_command].push(true);
       }
+    } else if(my.enabled && my.alive && my.origin.reload > 0 && my.origin.stunned === 0 && timer.roundState == "start" && timer.resetLocalPlayerFinished) {
+      ASSETS_MANAGER.get("sound_shoot_noammo").play(); // play cock sound (LOCAL)
     }
 }

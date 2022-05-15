@@ -160,6 +160,7 @@ function updateEntity(body, commands) {
         size: BULLET_SIZE,
         color: body.color
       });
+      partyEmit("playSound", "sound_shoot"); // play shooting sound (GLOBAL)
     }
   } else body.ifMove = false;
   
@@ -186,7 +187,8 @@ function updateEntity(body, commands) {
 
   // check if the entity collides the badge
   if(!shared.badge.isPicked && collideCheck(body, shared.badge)) {
-    badgeIsPicked(body)
+    badgeIsPicked(body);
+    partyEmit("playSound", "sound_pickup"); // play picking up sound (GLOBAL)
   }
 }
 
@@ -217,6 +219,7 @@ function checkAwaitingInstruction() {
           badgeIsLost(copy)
         }
       }
+      partyEmit("playSound", "sound_injure"); // play injure sound (GLOBAL)
     }
   }
   await_commands = []; // reset commands
