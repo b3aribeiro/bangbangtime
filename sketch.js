@@ -157,10 +157,12 @@ function joinGame() {
 
     initializePlayer("179, 47, 47");
     return;
-  }
-  if (!participants.find((p) => p.role === "player2")) {
+  } else if (!participants.find((p) => p.role === "player2")) {
     my.role = "player2";
     initializePlayer("47, 124, 179");
+    return;
+  } else {
+    my.role = "observer";
     return;
   }
 }
@@ -210,6 +212,7 @@ function initializePlayer(col = '255, 255, 255'){
 }
 
 function mouseReleased() {
+  console.log(gameState);
   if (gameState === "TITLE") {
     gameState = "MENU";
   }
