@@ -27,15 +27,16 @@ function drawEndScreen(){
     whoIsWinner();
   }
   
-  for(let p of participants) {
-    if(p.role !== "observer") {
-      if (p.role == "player1" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
-      else if (p.role == "player1" && p.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+
+  if (my.role == "player1" && my.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+  else if (my.role == "player1" && my.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+  else if (my.role == "player1" && my.isWin == "even") image(ASSETS_MANAGER.get("stunned1"), 0, 0); //use even score img instead
+
   
-      if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
-      else if (p.role == "player2" && p.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
-    }
-  }
+  if (my.role == "player2" && my.isWin == false) image(ASSETS_MANAGER.get("win_red"), 0, 0);
+  else if (my.role == "player2" && my.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
+  else if (my.role == "player2" && my.isWin == "even") image(ASSETS_MANAGER.get("stunned1"), 0, 0); //use even score img instead
+
 
   //instructions to restart the game
   if(partyIsHost()){
@@ -75,14 +76,37 @@ function drawInBetweenScreen(){
 
 function whoIsWinner() { // make the player who has the highest score become winner
   let highscore = 0;
+  let isFirstWinner = true;
+  let even = false;
 
+  //determine winning score
   for(let p of participants) {
     if(p.score > highscore) highscore = p.score;
   }
 
+  //assgin winner
   for(let p of participants) {
-    if(p.score == highscore) p.isWin = true;
+    if (p.score == highscore){
+
+      if (isFirstWinner){
+
+        p.isWin = true;
+        isFirstWinner = false;
+
+      } else {
+        even = true;
+      }
+    }
+  
   }
+
+  if (even){
+    for(let p of participants) {
+      p.isWin = "even"
+    }
+  }
+
+
 }
 
 function whoIsRoundWinner(){

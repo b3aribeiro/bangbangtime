@@ -3,6 +3,8 @@
 body, h1 {
   margin: 0;
   background-color: #000000;
+
+  cursor: url(./assets/mycursor.png), auto;
 }
 
 /*h1 {
