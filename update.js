@@ -93,7 +93,7 @@ function updateStats(){
   textSize(40);
   //`Current Round ${timer.roundCount}/${ROUND_TOTAL}`,
   text( `${timer.roundCount}/${ROUND_TOTAL}`, 115, 40);
-  text( `${timer.roundCountdown}'`, 455, 40);
+  text( `${timer.roundCountdown}"`, 455, 40);
   text( `${my.score}`, 770, 40);
   textSize(20);
   text( `Rounds`, 150, 72);
