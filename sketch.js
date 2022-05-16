@@ -92,7 +92,7 @@ function preload() {
   ASSETS_MANAGER.set("sound_move", loadSound('sound/jump-sound.wav'));
   ASSETS_MANAGER.set("sound_pickup", loadSound('sound/sfx_coin_double5.wav'));
 
-  // ASSETS_MANAGER.set("music", loadSound('sound/8BIT-AC-KKWestern.wav'))
+  ASSETS_MANAGER.set("music", loadSound('sound/lassolady.ogg'));
 }
 
 function loadAnim(path, num) { // load a series of png as an array
@@ -127,7 +127,10 @@ function setup() {
   partySubscribe("restartLocalClients", restartLocalPlayer);
   partySubscribe("clearBullets", clearBullets);
   partySubscribe("stun", stun);
+
   partySubscribe("playSound", onPlaySound);
+  partySubscribe("loopSound", onLoopSound);
+  partySubscribe("stopSound", onStopSound);
 }
 
 function draw() {
@@ -227,4 +230,10 @@ function onPlaySound(name) {
   console.log("onPlaySound", name);
 
   ASSETS_MANAGER.get(name).play();
+}
+function onLoopSound(name) {
+  ASSETS_MANAGER.get(name).loop();
+}
+function onStopSound(name) {
+  ASSETS_MANAGER.get(name).stop();
 }

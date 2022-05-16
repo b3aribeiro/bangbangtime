@@ -19,6 +19,7 @@ function startGame() {
   shared.isRunning = true; // start the game
 
   resetGameTimer();
+  partyEmit("loopSound", "music"); // start looping background music
 
   startRound();
 }
@@ -38,6 +39,7 @@ function endGame() {
   for(let p of participants) {
     p.enabled = false; // disable all the players
   }
+  partyEmit("stopSound", "music"); // stop looping background music
 
   shared.isRunning = false; // stop the game
 }
@@ -63,7 +65,6 @@ function startRound(){
   setTimeout(function() {  
     timer.resetLocalPlayerFinished = true;
   }, 300);
-    
 }
 
 
