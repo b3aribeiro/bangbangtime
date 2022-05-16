@@ -11,12 +11,7 @@ function drawGame(){
             updateGameObjects();
             updateGameVisual();
       
-            //update timer
-            if(partyIsHost()){ 
-              updateTimer();
-            }
-            //display timer and rounds 
-            drawTimer();
+            updateStats();
 
           }
 

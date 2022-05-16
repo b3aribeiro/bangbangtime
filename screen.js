@@ -30,12 +30,12 @@ function drawEndScreen(){
 
   if (my.role == "player1" && my.isWin == true) image(ASSETS_MANAGER.get("win_red"), 0, 0);
   else if (my.role == "player1" && my.isWin == false) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
-  else if (my.role == "player1" && my.isWin == "even") image(ASSETS_MANAGER.get("stunned1"), 0, 0); //use even score img instead
+  else if (my.role == "player1" && my.isWin == "even") image(ASSETS_MANAGER.get("draw_end"), 0, 0); //use even score img instead
 
   
   if (my.role == "player2" && my.isWin == false) image(ASSETS_MANAGER.get("win_red"), 0, 0);
   else if (my.role == "player2" && my.isWin == true) image(ASSETS_MANAGER.get("win_blue"), 0, 0);
-  else if (my.role == "player2" && my.isWin == "even") image(ASSETS_MANAGER.get("stunned1"), 0, 0); //use even score img instead
+  else if (my.role == "player2" && my.isWin == "even") image(ASSETS_MANAGER.get("draw_end"), 0, 0); //use even score img instead
 
 
   //instructions to restart the game
@@ -64,7 +64,7 @@ function drawInBetweenScreen(){
   text(`${result}`, width / 2, height / 2 - 100);
 
   textSize(20);
-  text(`current score: ${my.score}`, width / 2, height / 2 - 50);
+  text(`your score: ${my.score}`, width / 2, height / 2 - 50);
 
   text(`${timer.inbetweenCountdown}`, width / 2, height / 2);
   pop()

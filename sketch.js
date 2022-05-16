@@ -80,6 +80,7 @@ function preload() {
 
   ASSETS_MANAGER.set("win_red", loadImage('assets/red_wins.png'));
   ASSETS_MANAGER.set("win_blue", loadImage('assets/blue_wins.png'));
+  ASSETS_MANAGER.set("draw_end", loadImage('assets/draw_end.png'));
 
   ASSETS_MANAGER.set("hud", loadImage('assets/hud.png'));
 
@@ -136,7 +137,7 @@ function setup() {
 function draw() {
   background("#CF960B");
   imageMode(CORNER);
-
+  
   if(gameState === "PLAYING") {
     if (my.role !== "player1" && my.role !== "player2") {
       joinGame();

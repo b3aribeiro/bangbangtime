@@ -71,18 +71,19 @@ function updateInbetweenTimer(){
 function drawTimer(){
       //display timer and rounds 
       push()
-      translate(0, SITE.bottom - 580)
-      fill(0)
-      rect(0,580,width*2, 50)
+      //translate(0, SITE.bottom - 580)
+      //translate(400, 20)
+      // fill(0)
+      // rect(0,580,width*2, 50)
       fill(255)
       textSize(20);
       textAlign(CENTER);
-      text( `Current Round ${timer.roundCount}/${ROUND_TOTAL}`, 100, 570);
+      text( `Current Round ${timer.roundCount}/${ROUND_TOTAL}`, 100, 20);
       
-      text( `${my.score}`, 500, 570);
-      text( `${timer.roundCountdown}`, 300, 570);
+      text( `${my.score}`, 500, 20);
+      text( `${timer.roundCountdown}`, 300, 20);
       textFont('Helvetica');
-      text( "🕰️", 320, 575);
-      text( `✶`, 520, 573);
+      text( "🕰️", 320, 25);
+      text( `✶`, 520, 23);
       pop()
 }

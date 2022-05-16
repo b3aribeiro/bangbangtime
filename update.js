@@ -74,3 +74,31 @@ function collideCheck(obj1, obj2) { // check if 2 objects collide
   if(dist(x1, y1, x2, y2) <= s1 + s2) return true;
   else return false;
 }
+
+function updateStats(){
+  image(ASSETS_MANAGER.get("hud"), 50, 10);
+  image(ASSETS_MANAGER.get("hud"), 375, 10);
+  image(ASSETS_MANAGER.get("hud"), 700, 10);
+
+  //update timer
+  if(partyIsHost()){ 
+    updateTimer();
+  }
+
+  //display timer and rounds 
+  push()
+  //translate(0, SITE.bottom - 580)
+  fill(255)
+  textAlign(CENTER);
+  textSize(40);
+  //`Current Round ${timer.roundCount}/${ROUND_TOTAL}`,
+  text( `${timer.roundCount}/${ROUND_TOTAL}`, 115, 40);
+  text( `${timer.roundCountdown}'`, 455, 40);
+  text( `${my.score}`, 770, 40);
+  textSize(20);
+  text( `Rounds`, 150, 72);
+  textFont('Helvetica');
+  textSize(30);
+  text( `✶`, 795, 47);
+  pop()
+}
